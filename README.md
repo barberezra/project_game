@@ -3,7 +3,7 @@
 ### To do:
 - [ ] Figure out team name
 - [x] Decide type of game:
-- Othello (and variations)
+- Mancala (Kalah)
 ### In Progress:
 
 ### Completed:
