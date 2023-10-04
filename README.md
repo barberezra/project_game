@@ -2,11 +2,8 @@
 ## Tasks
 ### To do:
 - [ ] Figure out team name
-- [ ] Decide type of game:
-- Tetris variation
-- Cascadia
-- Go
-- Othello
+- [x] Decide type of game:
+- Othello (and variations)
 ### In Progress:
 
 ### Completed:
