@@ -20,9 +20,8 @@ CMD ["flask", "run"]
 
 FROM python:3.7-alpine as web
 WORKDIR /code
-COPY ./web/app.py .
 # We set some Environment variables in the container which Flask uses
-ENV FLASK_APP=app.py
+ENV FLASK_APP=./web/app.py
 ENV FLASK_RUN_HOST=0.0.0.0
 # We install Flask and requests in the container using Pip
 RUN pip install flask
