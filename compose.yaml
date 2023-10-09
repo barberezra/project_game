@@ -28,6 +28,6 @@ services:
       environment:
         MYSQL_ROOT_PASSWORD: thebestgame
         restart: on-failure
-    volumes:
-      - ./db:/docker-entrypoint-initdb.d/
-      - ./db-storage:/var/lib/mysql
+      volumes:
+        - ./db:/docker-entrypoint-initdb.d/
+        - ./db-storage:/var/lib/mysql
