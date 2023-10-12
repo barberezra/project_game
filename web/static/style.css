@@ -12,14 +12,18 @@ h1 {
 div.pit {
     width: 70px;
     height: 70px;
+    padding-top: 10px;
     margin: 20px;
     flex: 1 1 auto;
     display: inline-flex;
     flex-basis: 180px;
     justify-content: center;
     align-items: center;
+    vertical-align: middle;
     justify-content: center;
+    font-size: 4em;
     border: 3px solid gray;
+    border-radius: 30px;
 }
 
 #bottom-row {
