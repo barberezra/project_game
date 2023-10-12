@@ -3,7 +3,7 @@
     <head>
         <title>Play Mancala!</title>
         <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-        <link rel="stylesheet" href="./style.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     </head>
     <body>
         <h1>Mancala</h1>
@@ -25,7 +25,7 @@
             document.querySelectorAll('.pit').forEach(function(pit) {
                 pit.addEventListener('click', function() {
                     // Get the pit number from the data attribute
-                    var pitNumber = pit.getAttribute('data-pit');
+                    var pitNumber = pit.textContent;
                     
                     // Send an AJAX request to the server to capture the pit value
                     fetch('/capture_pit', {
