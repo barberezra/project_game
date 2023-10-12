@@ -8,24 +8,24 @@
     <body>
         <h1>Mancala</h1>
         <div id="mancala-board">
-            <div class="pit" data-pit="12">Pit 12</div>
-            <div class="pit" data-pit="11">Pit 11</div>
-            <div class="pit" data-pit="10">Pit 10</div>
-            <div class="pit" data-pit="9">Pit 9</div>
-            <div class="pit" data-pit="8">Pit 8</div>
-            <div class="pit" data-pit="7">Pit 7</div>
-            <div class="pit" data-pit="1">Pit 1</div>
-            <div class="pit" data-pit="2">Pit 2</div>
-            <div class="pit" data-pit="3">Pit 3</div>
-            <div class="pit" data-pit="4">Pit 4</div>
-            <div class="pit" data-pit="5">Pit 5</div>
-            <div class="pit" data-pit="6">Pit 6</div>
+            <div class="pit" data-pit="12">12</div>
+            <div class="pit" data-pit="11">11</div>
+            <div class="pit" data-pit="10">10</div>
+            <div class="pit" data-pit="9">9</div>
+            <div class="pit" data-pit="8">8</div>
+            <div class="pit" data-pit="7">7</div>
+            <div class="pit" data-pit="1">1</div>
+            <div class="pit" data-pit="2">2</div>
+            <div class="pit" data-pit="3">3</div>
+            <div class="pit" data-pit="4">4</div>
+            <div class="pit" data-pit="5">5</div>
+            <div class="pit" data-pit="6">6</div>
         </div>
         <script>
             document.querySelectorAll('.pit').forEach(function(pit) {
                 pit.addEventListener('click', function() {
                     // Get the pit number from the data attribute
-                    var pitNumber = pit.textContent;
+                    var pitNumber = pit.getAttribute('data-pit');
                     
                     // Send an AJAX request to the server to capture the pit value
                     fetch('/capture_pit', {
@@ -39,6 +39,11 @@
                     .then(data => {
                         // Handle the response from the server if needed
                         console.log('Pit value captured: ' + data.pit);
+                        var pitResultElement = resultContainer.querySelector('.pit[data-pit="' + pitNumber + '"]');
+                        var pitNumberValue = pitResultElement.querySelector('.pit-number-value');
+
+                        pitNumberValue.textContent = data.pit;
+
                     });
                 });
             });
