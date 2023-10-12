@@ -1,5 +1,7 @@
 h1 {
     text-align: center;
+    font-size: 4em;
+    margin: 10px;
 }
 
 #mancala-board {
@@ -26,19 +28,18 @@ div.pit {
 }
 
 /* Apply specific styles to data-pit="14" and data-pit="7" */
-div.pit[data-pit="14"] {
+div.pit[data-pit="14"], div.pit[data-pit="7"] {
     height: 170px;
     width: 190px;
-    float: left;
     vertical-align: middle;
     padding-top: 40px;
 }
 
 div.pit[data-pit="7"] {
-    height: 170px;
-    width: 190px;
     float: right;
-    padding-top: 40px;
+}
+div.pit[data-pit="14"] {
+    float: left;
 }
 
 /* Use CSS Grid to evenly distribute the filler pits between 7 and 14 */
