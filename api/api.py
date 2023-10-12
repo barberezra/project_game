@@ -9,4 +9,4 @@ def move():
     pitNumber = data.get('pitNumber')
     pitValue = data.get('pitValue') # Replace with your actual game logic
     pitValue = "1"
-    return jsonify({'pit': pitNumber, 'pitValue': pitValue})
+    return jsonify({'pitNumber': pitNumber, 'pitValue': pitValue})
