@@ -4,28 +4,45 @@ h1 {
 
 #mancala-board {
     width: 100%;
-    margin: auto;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    text-align: center;
 }
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 div.pit {
-    width: 70px;
-    height: 70px;
-    padding-top: 10px;
-    margin: 20px;
-    flex: 1 1 auto;
-    display: inline-flex;
-    flex-basis: 180px;
-    justify-content: center;
+    width: 10%;
+    height: 80px;
     align-items: center;
-    vertical-align: middle;
     justify-content: center;
     font-size: 4em;
     border: 3px solid gray;
     border-radius: 30px;
+    display: inline-block;
+    margin: 6px;
 }
 
-#bottom-row {
-    clear: both;
+/* Apply specific styles to data-pit="14" and data-pit="7" */
+div.pit[data-pit="14"] {
+    height: 170px;
+    width: 190px;
+    float: left;
+    vertical-align: middle;
+    padding-top: 40px;
+}
+
+div.pit[data-pit="7"] {
+    height: 170px;
+    width: 190px;
+    float: right;
+    padding-top: 40px;
+}
+
+/* Use CSS Grid to evenly distribute the filler pits between 7 and 14 */
+#mancala-board > div.pit:not([data-pit="14"]):not([data-pit="7"]) {
+    flex: 1; /* Allow these pits to flexibly fill the space between 7 and 14 */
+    width: 80px; /* Set the width for the filler pits */
 }
