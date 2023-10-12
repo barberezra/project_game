@@ -6,6 +6,7 @@ app = Flask(__name__)
 def move():
     data = request.get_json()
     # Perform the game logic based on the data
-    pit = data.get('pit')  # Replace with your actual game logic
-    pit = 1
-    return jsonify({'pit': pit})
+    pitNumber = data.get('pitNumber')
+    pitValue = data.get('pitValue') # Replace with your actual game logic
+    pitValue = "1"
+    return jsonify({'pit': pitNumber, 'pitValue': pitValue})
