@@ -1,3 +1,14 @@
+function range(start, end) {
+    var result = [];
+    for (let i = start; i <= end; i++) {
+        result.push(i)
+    }
+    return result;
+}
+
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.pit').forEach(function(pit) {
         var pitNumber = pit.getAttribute('data-pit');
@@ -5,12 +16,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (pitNumber !== "7" && pitNumber !== "14") {
             pit.addEventListener('click', function() {
                 // Get the pit number from the data attribute
-                var pitNumber = pit.getAttribute('data-pit');
+                var pitNumber = pit.getAttribute('data-pit'); // FIX DATA GATHERING (LIST LOGIC)
                 var nextPit = (pitNumber+1) % 14
-                var pitRange = list(range(nextPit, nextPit + (pit.textContent-1)))
+                const pitRange = range(nextPit, nextPit + (pit.textContent-1))
                 var pitValues= []
                 for (pitValue in pitRange) {
-                    pitValues.append(pit.getAttribute(pitValue).textContent)
+                    pitValues.push(pit.textContent)
                 }
 
                 // Send an AJAX request to the server to capture the pit value
