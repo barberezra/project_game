@@ -19,8 +19,9 @@ def capture_pit():
         response_data = response.json()
         pitNumber = response_data.get('pitNumber')
         pitValue = response_data.get('pitValue')
+        pitRange = response_data.get('pitRange')
         # Return a JSON response including pitNumber and pitValue
-        return jsonify({'pitNumber': pitNumber, 'pitValue': pitValue})
+        return jsonify({'pitNumber': pitNumber, 'pitValue': pitValue, 'pitRange': pitRange})
     else:
         # Handle the case where the external API request fails
         return jsonify({'error': 'Failed to capture pit data from the external API'}, 500)
