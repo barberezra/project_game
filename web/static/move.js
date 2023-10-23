@@ -53,9 +53,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         var temp = parseInt(pitAffectedElement.textContent);
                         pitAffectedElement.textContent = parseInt(temp + 1);
                     }
-                    // if (data.capture) {
-                    //     console.log("Capture occured on pit: " + pitNumber)
-                    // }
+                    if (data.capture) {
+                        console.log("Capture occured on pit: " + pitNumber)
+                    }
                 });
             });
         }

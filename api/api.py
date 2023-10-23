@@ -10,14 +10,14 @@ def move():
     # pitValue = data.get('pitValue') # Replace with your actual game logic
     pitRange = data.get('pitRange')
 
-    # lastPit = pitRange[-1] #determine if the last stone ends up in an empty pit on the player's side
+    lastPit = pitRange[-1] #determine if the last stone ends up in an empty pit on the player's side
 
-    # capture = False
-    # if (1 <= lastPit <= 6 or 8 <= lastPit <= 13) and int(data['pitValue']) == 1:
-    #     capture = True
+    capture = False
+    if (1 <= lastPit <= 6 or 8 <= lastPit <= 13) and int(data['pitValue']) == 1:
+        capture = True
 
-    # if capture:
-    #     oppositePit = 14 - lastPit
+    if capture:
+        oppositePit = 14 - lastPit
     
     # return the current values for those pits and update it
     return jsonify({'pitNumber': pitNumber, 'pitValue': 0, 'pitRange': pitRange})
