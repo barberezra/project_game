@@ -16,10 +16,10 @@ function range(start, moves) {
 function gameWin(pitId, pitValue) {
     var gameEnd;
         if(pitId%7 == 0 || pitValue == "0"){
-            gameEnd = True; // just because it will only exit end checking if gameEnd is explicitly false
+            gameEnd = False; // just because it will only exit end checking if gameEnd is explicitly false
         }
         else if (pitValue != "0"){
-            gameEnd =  False;
+            gameEnd =  True;
             
         }
     return gameEnd;
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var pitId = pit.getAttribute('data-pit');
         var pitValue = pit.textContent;
         var gameEnd = gameWin(pitId, pitValue);
-        if(gameEnd != True){
+        if(gameEnd == True){
             //what the hell is JS even. i have no idea how to exit out of this 
             return True;
         }
