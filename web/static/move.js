@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var pitId = pit.getAttribute('data-pit');
         var pitValue = pit.textContent;
         var gameEnd = gameWin(pitId, pitValue);
-        if(gameEnd == True){
+        if(gameEnd != True){
             //what the hell is JS even 
         }
     });
