@@ -1,5 +1,14 @@
 // Functionality for Game Moves
 
+// player turns
+const players = ["Player 1", "Player 2"];
+let currentPlayerIndex = 0;
+
+// switch player turns
+function switchTurn() {
+  currentPlayerIndex = (currentPlayerIndex + 1) % 2;
+}
+
 // finds the range of affected pits from click dispersal
 function range(start, moves) {
     var res = [];
@@ -13,7 +22,16 @@ function range(start, moves) {
     return res;
 }
 
+function welcomeMessage() {
+    return "Welcome! Player 1, please click on a pit in your row to start the game.";
+}
+
+// watching page activity
 document.addEventListener('DOMContentLoaded', function() {
+    // welcome
+    document.querySelector('h3').innerHTML = welcomeMessage();
+
+    // tracking pit changes
     document.querySelectorAll('.pit').forEach(function(pit) {
         // Get the pit number from the data attribute
         var pitNumber = pit.getAttribute('data-pit');
@@ -46,6 +64,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Handle the response from the server if needed
                     console.log('Pit value captured: ' + data.pitValue);
                     console.log('Pit values affected: ' + pitRange);
+                    console.log('Context: ' + pit.textContent + typeof(pit.textContent));
+                    console.log(players[currentPlayerIndex]);
                     var pitResultElement = document.querySelector('.pit[data-pit="' + pitNumber + '"]');
                     pitResultElement.textContent = data.pitValue;
                     for (const pit of pitRange) {
@@ -54,6 +74,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         pitAffectedElement.textContent = parseInt(temp + 1);
                     }
                 });
+
+                switchTurn();
+                // notifying users of player turn
+                document.querySelector('h3').innerHTML = players[currentPlayerIndex]+"'s turn:";
             });
         }
     });

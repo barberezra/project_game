@@ -6,13 +6,13 @@ body {
   text-align:center;
   justify-content: center;
   align-items: center;
+  font-family: 'Rubik', sans-serif;
 }
 
 h1 {
   text-align: center;
   font-size: 4em;
   margin: 4%;
-  font-family: 'Rubik', sans-serif;
 }
 
 #mancala-board {
