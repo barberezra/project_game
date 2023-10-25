@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var winCheckPits = {};
     // afaik this is where this should be but let me know if im wrong. i thought it should go in the event listener thing (um im not
     //sure exactly what that does???) but like it's in its own separate loop?
-    document.querySelectorAll('.pit').every(function(pit) {
+    document.querySelectorAll('.pit').forEach(function(pit) {
         var pitId = pit.getAttribute('data-pit');
         var pitValue = pit.textContent;
         winCheckPits.push(JSON.stringify({pitId: pitValue}));
