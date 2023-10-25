@@ -84,7 +84,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.pit').forEach(function(pit) {
         var pitId = pit.getAttribute('data-pit');
         var pitValue = pit.textContent;
-        winCheckPits.push(JSON.stringify({pitId: pitId, pitValue:pitValue})); //might not need to be JSON
+        //Just pushing the pit ID and then setting the dictionary value manually, will this work?
+        winCheckPits.push(pitId);
+        winCheckPits[pitId] = pitValue;
     });
     var gameEnd = gameWin(winCheckPits);
     if(gameEnd == true){
