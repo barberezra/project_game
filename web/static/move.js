@@ -88,6 +88,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     var gameEnd = gameWin(winCheckPits);
     if(gameEnd == true){
-        //something
+        console.log('The game is over :)');
     }
 });
