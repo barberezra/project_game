@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
         winCheckPits.push(JSON.stringify({pitId: pitValue}));
     });
     var gameEnd = gameWin(winCheckPits);
-    if(gameEnd == false){
+    if(gameEnd == true){
         //something
     }
 });
