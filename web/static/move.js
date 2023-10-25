@@ -25,14 +25,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Get list of all affected pits (from next pit to the last pit affected)
                 var pitRange = range(pitNumber, pit.textContent);
 
-                pitNumbers.forEach(pitIndex => {
-                    var pitElement = document.querySelector('.pit[data-pit="' + pitIndex + '"]');
-                    if (pitElement) {
-                        pitValues.push(pitElement.textContent);
-                    }
-                });
-
-
                 // Send an AJAX request to the server to capture the pit value
                 fetch('/capture_pit', {
                     method: 'POST',
