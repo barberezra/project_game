@@ -14,10 +14,9 @@ function range(start, moves) {
 }
 
 function gameWin(pitId, pitValue) {
-    var gameEnd = TRUE;
-    
+    var gameEnd;
         if(pitId%7 == 0 || pitValue == "0"){
-            //do nothing
+            gameEnd = True; // just because it will only exit end checking if gameWin is explicitly false
         }
         else if (pitValue != "0"){
             gameEnd =  False;
@@ -75,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var pitValue = pit.textContent;
         var gameEnd = gameWin(pitId, pitValue);
         if(gameEnd != True){
-            //what the hell is JS even 
+            //what the hell is JS even. i have no idea how to exit out of this 
         }
     });
 });
