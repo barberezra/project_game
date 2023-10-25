@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.pit').forEach(function(pit) {
         var pitId = pit.getAttribute('data-pit');
         var pitValue = pit.textContent;
-        winCheckPits.push(JSON.stringify({pitId: pitId, pitValue:pitValue}));
+        winCheckPits.push(JSON.stringify({pitId: pitId, pitValue:pitValue})); //might not need to be JSON
     });
     var gameEnd = gameWin(winCheckPits);
     if(gameEnd == true){
