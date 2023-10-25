@@ -16,7 +16,7 @@ function range(start, moves) {
 function gameWin(pitId, pitValue) {
     var gameEnd;
         if(pitId%7 == 0 || pitValue == "0"){
-            gameEnd = True; // just because it will only exit end checking if gameWin is explicitly false
+            gameEnd = True; // just because it will only exit end checking if gameEnd is explicitly false
         }
         else if (pitValue != "0"){
             gameEnd =  False;
@@ -69,6 +69,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+    // afaik this is where this should be but let me know if im wrong. i thought it should go in the event listener thing (um im not
+    //sure exactly what that does???) but like it's in its own separate loop?
     document.querySelectorAll('.pit').forEach(function(pit) {
         var pitId = pit.getAttribute('data-pit');
         var pitValue = pit.textContent;
