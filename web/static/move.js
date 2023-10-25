@@ -13,15 +13,21 @@ function range(start, moves) {
     return res;
 }
 
-function gameWin(pitId, pitValue) {
-    var gameEnd;
-        if(pitId%7 == 0 || pitValue == "0"){
-            gameEnd = False; // just because it will only exit end checking if gameEnd is explicitly false
-        }
-        else if (pitValue != "0"){
-            gameEnd =  True;
-            
-        }
+function gameWin(pits) {
+    var gameEnd = true;
+    while (gameEnd == true){
+        for(pitId in pits){
+            if(pitId%7 == 0 ||pits[pitId] == "0"){
+                gameEnd = true; // just because it will only exit end checking if gameEnd is explicitly false
+            }
+            else if (pits[pitId] != "0"){
+                gameEnd =  false;
+                break;
+                
+            }
+        }    
+    }
+
     return gameEnd;
     }
 
@@ -69,16 +75,13 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+    var winCheckPits = {};
     // afaik this is where this should be but let me know if im wrong. i thought it should go in the event listener thing (um im not
     //sure exactly what that does???) but like it's in its own separate loop?
     document.querySelectorAll('.pit').every(function(pit) {
         var pitId = pit.getAttribute('data-pit');
         var pitValue = pit.textContent;
-        var gameEnd = gameWin(pitId, pitValue);
-        if(gameEnd == True){
-            //what the hell is JS even. i have no idea how to exit out of this 
-            return True;
-        }
+        winCheckPits.push(JSON.stringify({pitId: pitValue}));
     });
     
 });
