@@ -71,12 +71,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     // afaik this is where this should be but let me know if im wrong. i thought it should go in the event listener thing (um im not
     //sure exactly what that does???) but like it's in its own separate loop?
-    document.querySelectorAll('.pit').forEach(function(pit) {
+    document.querySelectorAll('.pit').every(function(pit) {
         var pitId = pit.getAttribute('data-pit');
         var pitValue = pit.textContent;
         var gameEnd = gameWin(pitId, pitValue);
         if(gameEnd != True){
             //what the hell is JS even. i have no idea how to exit out of this 
+            return True;
         }
     });
+    
 });
