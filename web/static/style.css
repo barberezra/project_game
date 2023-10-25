@@ -1,49 +1,64 @@
+/* CSS styles */
+body {
+  background-color: #E9E5D6;
+  overflow: hidden;
+  color: #362706;
+  text-align:center;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Rubik', sans-serif;
+}
+
 h1 {
-    text-align: center;
-    font-size: 4em;
-    margin: 10px;
+  text-align: center;
+  font-size: 4em;
+  margin: 4%;
 }
 
 #mancala-board {
-    width: 100%;
-    text-align: center;
+  width: 170vh;
+  height: 50vh;
+  background-color: #464E2E;
+  margin: auto;
+  display: flex;
+  border-radius: 20px;
+  border: 1px solid white;
+  font-size: 0.6em;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+.inner-box {
+  width: 70%;
+  height: 100%;
+  display: table;
 }
 
-div.pit {
-    width: 10%;
-    height: 80px;
-    align-items: center;
-    justify-content: center;
-    font-size: 4em;
-    border: 3px solid gray;
-    border-radius: 30px;
-    display: inline-block;
-    margin: 6px;
+.pit-container {
+  width: 100%;
+  height: 50%;
+  display: flex;
+}
+
+.pit {
+  width: 14%;
+  height: 70%;
+  background-color: #ACB992;
+  font-size: 4em;
+  border-radius: 50%;
+  display: inline-block;
+  padding: auto;
+  margin: auto;
 }
 
 /* Apply specific styles to data-pit="14" and data-pit="7" */
 div.pit[data-pit="14"], div.pit[data-pit="7"] {
-    height: 170px;
-    width: 190px;
-    vertical-align: middle;
-    padding-top: 40px;
-}
-
-div.pit[data-pit="7"] {
-    float: right;
-}
-div.pit[data-pit="14"] {
-    float: left;
+width: 12%;
+height: 80%;
+border-radius: 20px;
+margin: auto;
 }
 
 /* Use CSS Grid to evenly distribute the filler pits between 7 and 14 */
 #mancala-board > div.pit:not([data-pit="14"]):not([data-pit="7"]) {
-    flex: 1; /* Allow these pits to flexibly fill the space between 7 and 14 */
-    width: 80px; /* Set the width for the filler pits */
+  flex: 1; /* Allow these pits to flexibly fill the space between 7 and 14 */
+  width: 75%; /* Set the width for the filler pits */
 }
