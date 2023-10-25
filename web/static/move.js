@@ -14,20 +14,23 @@ function range(start, moves) {
 }
 
 function gameWin(pits) {
-    var gameEnd = true;
-    while (gameEnd == true){
+    var gameContinue = true;
+    while (gameContinue == true){
         for(pitId in pits){
             if(pitId%7 == 0 ||pits[pitId] == "0"){
-                gameEnd = true; // just because it will only exit end checking if gameEnd is explicitly false
+                gameContinue = true; // just because it will only exit end checking if gameEnd is explicitly false
             }
             else if (pits[pitId] != "0"){
-                gameEnd =  false;
+                gameContinue =  false;
                 break;
                 
             }
         }    
     }
-
+    var gameEnd = false;
+    if (gameContinue == false){
+        gameEnd = true;
+    }
     return gameEnd;
     }
 
@@ -83,5 +86,8 @@ document.addEventListener('DOMContentLoaded', function() {
         var pitValue = pit.textContent;
         winCheckPits.push(JSON.stringify({pitId: pitValue}));
     });
-    
+    var gameEnd = gameWin(winCheckPits);
+    if(gameEnd == false){
+        //something
+    }
 });
