@@ -33,7 +33,7 @@ function gameWin(pits) {
     }
     return gameEnd;
     }
-
+        // ADD UNIQUE GAME IDS
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.pit').forEach(function(pit) {
         // Get the pit number from the data attribute
