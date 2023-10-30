@@ -33,6 +33,7 @@ function gameWin(pits) {
     }
     return gameEnd;
     }
+    var winCheckPits = {};
         // ADD UNIQUE GAME IDS
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.pit').forEach(function(pit) {
@@ -74,20 +75,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         var temp = parseInt(pitAffectedElement.textContent);
                         pitAffectedElement.textContent = parseInt(temp + 1);
                     }
+                    //moved inside loop
+                    //Just pushing the pit ID and then setting the dictionary value manually, will this work?
+                    winCheckPits.push(pitNumber);
+                    winCheckPits[pitNumber] = pitElement.textContent;
                 });
             });
         }
     });
-    var winCheckPits = {};
-    // afaik this is where this should be but let me know if im wrong. i thought it should go in the event listener thing (um im not
-    //sure exactly what that does???) but like it's in its own separate loop?
-    document.querySelectorAll('.pit').forEach(function(pit) {
-        var pitId = pit.getAttribute('data-pit');
-        var pitValue = pit.textContent;
-        //Just pushing the pit ID and then setting the dictionary value manually, will this work?
-        winCheckPits.push(pitId);
-        winCheckPits[pitId] = pitValue;
-    });
+    
+
     var gameEnd = gameWin(winCheckPits);
     if(gameEnd == true){
         console.log('The game is over :)');
