@@ -38,11 +38,16 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (pitNumber !== "7" && pitNumber !== "14" && pit.textContent !== "0") {
             pit.addEventListener('click', function() {
+<<<<<<< HEAD
                 if ((currentPlayerIndex === 0 && pitNumber > 6) || (currentPlayerIndex === 1 && pitNumber < 7)) {
                     alert("Be patient. It's not your turn!");
                     return;
                 }
                 
+=======
+                // Get the pit number from the data attribute
+                var pitNumber = pit.getAttribute('data-pit');
+>>>>>>> parent of a55bd0e (it's clear what player is playing now)
                 // Get list of all affected pits (from next pit to the last pit affected)
                 var pitRange = range(pitNumber, pit.textContent);
 
