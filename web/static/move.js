@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 // Functionality for Game Moves
 
 // player turns
@@ -92,4 +90,3 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
->>>>>>> parent of a55bd0e (it's clear what player is playing now)
