@@ -56,20 +56,36 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Handle the response from the server if needed
                     console.log('Pit value captured: ' + data.pitValue);
                     console.log('Pit values affected: ' + pitRange);
-                    console.log('Context: ' + pit.textContent + typeof(pit.textContent));
-                    console.log(players[currentPlayerIndex]);
                     var pitResultElement = document.querySelector('.pit[data-pit="' + pitNumber + '"]');
                     pitResultElement.textContent = data.pitValue;
+                    
                     for (const pit of pitRange) {
                         var pitAffectedElement = document.querySelector('.pit[data-pit="' + pit + '"]');
                         var temp = parseInt(pitAffectedElement.textContent);
                         pitAffectedElement.textContent = parseInt(temp + 1);
                     }
-                });
 
-                switchTurn();
-                // notifying users of player turn
-                document.querySelector('h3').innerHTML = players[currentPlayerIndex]+"'s turn:";
+                    // Capture mechanism starts here
+                    if (data.capture) {
+                        console.log("Capture occurred on pit: " + pitNumber);
+       
+                        var oppositePit = 14 - pitNumber;
+                        var oppositePitElement = document.querySelector('.pit[data-pit="' + oppositePit + '"]');
+       
+                        // Capture stones from the opposite pit
+                        var capturedStones = parseInt(oppositePitElement.textContent);
+                        oppositePitElement.textContent = "0";
+       
+                        // Determine which Mancala store to add captured stones to. 
+                        var mancalaStorePit = (pitNumber <= 6) ? "7" : "14";
+                        var mancalaStoreElement = document.querySelector('.pit[data-pit="' + mancalaStorePit + '"]');
+       
+                        // Add captured stones to the Mancala store
+                        mancalaStoreElement.textContent = parseInt(mancalaStoreElement.textContent) + capturedStones + 1; // +1 for the last stone that caused the capture
+                    }
+                    // Capture mechanism ends here
+
+                });
             });
         }
     });
