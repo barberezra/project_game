@@ -58,40 +58,38 @@ document.addEventListener('DOMContentLoaded', function() {
                     return response.json();
                 })
                 .then(data => {
-                    // Handle the response from the server if needed
-                    console.log('Pit value captured: ' + data.pitValue);
                     console.log('Pit values affected: ' + pitRange);
-                    var pitResultElement = document.querySelector('.pit[data-pit="' + pitNumber + '"]');
-                    pitResultElement.textContent = "0";
-                    
-                    for (const pit of pitRange) {
-                        var pitAffectedElement = document.querySelector('.pit[data-pit="' + pit + '"]');
-                        var temp = parseInt(pitAffectedElement.textContent);
-                        pitAffectedElement.textContent = temp + 1;
-                    }
-
-                    // Capture mechanism starts here
+                
+                    // Handle capturing
                     if (data.capture) {
                         console.log("Capture occurred on pit: " + pitNumber);
-       
-                        var oppositePit = 14 - pitNumber;
-                        var oppositePitElement = document.querySelector('.pit[data-pit="' + oppositePit + '"]');
-       
+                        let oppositePit = 14 - pitNumber;
+                        let oppositePitElement = document.querySelector('.pit[data-pit="' + oppositePit + '"]');
+                
                         // Capture stones from the opposite pit
-                        var capturedStones = parseInt(oppositePitElement.textContent);
+                        let capturedStones = parseInt(oppositePitElement.textContent);
                         oppositePitElement.textContent = "0";
-       
-                        // Determine which Mancala store to add captured stones to. 
-                        var mancalaStorePit = (pitNumber <= 6) ? "7" : "14";
-                        var mancalaStoreElement = document.querySelector('.pit[data-pit="' + mancalaStorePit + '"]');
-       
+                
+                        // Determine which Mancala store to add captured stones to
+                        let mancalaStorePit = (pitNumber <= 6) ? "7" : "14";
+                        let mancalaStoreElement = document.querySelector('.pit[data-pit="' + mancalaStorePit + '"]');
+                
                         // Add captured stones to the Mancala store
                         mancalaStoreElement.textContent = parseInt(mancalaStoreElement.textContent) + capturedStones + 1; // +1 for the last stone that caused the capture
                     }
-
-                    // Switch turns after a move
-                    switchTurn();
+                
+                    // Update pit values
+                    updatePits(data.pitValues);  // Assuming you have a function to update pit values based on server response
+                
+                    // Handle additional turn
+                    if (data.additionalTurn) {
+                        console.log("Additional turn for " + players[currentPlayerIndex]);
+                    } else {
+                        // Switch turns after a move
+                        switchTurn();
+                    }
                 })
+                
                 .catch((error) => {
                     console.error('There has been a problem with your fetch operation:', error);
                 });

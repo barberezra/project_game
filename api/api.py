@@ -2,27 +2,50 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
+# Initialize the board state
+# 6 pits for each player + 1 mancala/store for each player
+board = [4] * 6 + [0] + [4] * 6 + [0]
+
 @app.route('/move', methods=['POST'])
 def move():
     data = request.get_json()
-    # Perform the game logic based on the data
     pitNumber = data.get('pitNumber')
-    # pitValue = data.get('pitValue') # Replace with your actual game logic
-    pitRange = data.get('pitRange')
+    stones = board[pitNumber]
+    board[pitNumber] = 0
 
+    additional_turn = False
     capture = False
-    capturedStones = 0
+    captured_stones = 0
 
-    if pitNumber <= 6:
-        if pitRange[-1] <= 6 and pitRange[-1] != pitNumber:
-            capture = True
-    else:
-        if 7 <= pitRange[-1] <= 13 and pitRange[-1] != pitNumber:
-            capture = True
-    
-    if capture:
-        opposite = 14 - pitRange[-1]
-        capturedStones = 4
+    # Distribute the stones
+    for i in range(1, stones + 1):
+        next_pit = (pitNumber + i) % 14
+        board[next_pit] += 1
 
-    # return the current values for those pits and update it
-    return jsonify({'pitNumber': pitNumber, 'pitValue': 0, 'pitRange': pitRange, 'capture' : capture, 'capturedStones':capturedStones})
+        # Last stone conditions
+        if i == stones:
+            # Additional turn condition
+            if next_pit == 6 or next_pit == 13:
+                additional_turn = True
+
+            # Capture condition
+            if board[next_pit] == 1 and ((pitNumber <= 6 and next_pit <= 6) or (pitNumber >= 7 and next_pit >= 7)):
+                opposite_pit = 12 - next_pit
+                captured_stones = board[opposite_pit]
+                board[opposite_pit] = 0
+                board[next_pit] = 0
+                board[6 if pitNumber <= 6 else 13] += captured_stones + 1
+                capture = True
+
+    # Return updated board state and other game data
+    return jsonify({
+        'board': board,
+        'pitNumber': pitNumber,
+        'pitValue': board[pitNumber],
+        'additionalTurn': additional_turn,
+        'capture': capture,
+        'capturedStones': captured_stones
+    })
+
+if __name__ == '__main__':
+    app.run(debug=True)
