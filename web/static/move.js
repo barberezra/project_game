@@ -54,8 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(data => {
                     // Handle the response from the server if needed
-                    console.log('Pit value captured: ' + data.pitValue);
-                    console.log('Pit values affected: ' + pitRange);
+                    console.log('Pit IDs affected: ' + pitRange);
                     console.log('Context: ' + pit.textContent + typeof(pit.textContent));
                     console.log(players[currentPlayerIndex]);
                     var pitResultElement = document.querySelector('.pit[data-pit="' + pitNumber + '"]');
