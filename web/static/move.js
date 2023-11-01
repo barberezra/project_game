@@ -82,8 +82,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     //moved inside loop
                     //Just pushing the pit ID and then setting the dictionary value manually, will this work?
                     for(const pit of document.querySelectorAll('.pit')){
-                        var pitNumber = pit.getAttribute('data-pit');
-                        winCheckPits[pitNumber] = pit.textContent; // this doesnt work (make own loop for board pits)
+                        var pitId = pit.getAttribute('data-pit');
+                        winCheckPits[pitId] = pit.textContent; // this doesnt work (make own loop for board pits)
                     }
                     console.log(winCheckPits);
                     var gameEnd = gameWin(winCheckPits);
