@@ -23,21 +23,16 @@ function range(start, moves) {
 }
 
 function gameWin(pits) {
-    var gameContinue = true;
+    var gameEnd = false;
         for(pitId in pits){
             if(pitId%7 == 0 ||pits[pitId] == "0"){
-
+                gameEnd = true;
             }
-            else if (pits[pitId] != "0"){
-                gameContinue =  false;
-                break;
-                
+            else if (pitId%7 != 0 && pits[pitId] != "0"){
+                return false;     
         }    
     }
-    var gameEnd = false;
-    if (gameContinue == false){
-        gameEnd = true;
-    }
+    
     return gameEnd;
     }
     var winCheckPits = {};
