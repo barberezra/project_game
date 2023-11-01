@@ -15,16 +15,14 @@ function range(start, moves) {
 
 function gameWin(pits) {
     var gameContinue = true;
-    while (gameContinue == true){
         for(pitId in pits){
             if(pitId%7 == 0 ||pits[pitId] == "0"){
-                gameContinue = true; // just because it will only exit end checking if gameEnd is explicitly false
+
             }
             else if (pits[pitId] != "0"){
                 gameContinue =  false;
                 break;
                 
-            }
         }    
     }
     var gameEnd = false;
@@ -47,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Get list of all affected pits (from next pit to the last pit affected)
                 var pitRange = range(pitNumber, pit.textContent);
 
-                pitNumbers.forEach(pitIndex => {
+                pitRange.forEach(pitIndex => {
                     var pitElement = document.querySelector('.pit[data-pit="' + pitIndex + '"]');
                     if (pitElement) {
                         pitValues.push(pitElement.textContent);
@@ -77,9 +75,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     //moved inside loop
                     //Just pushing the pit ID and then setting the dictionary value manually, will this work?
-                    winCheckPits.push(pitNumber);
-                    winCheckPits[pitNumber] = pitElement.textContent;
+ 
                 });
+                winCheckPits.push(pitNumber);
+                winCheckPits[pitNumber] = pitElement.textContent;
+                console.log(winCheckPits);
             });
         }
     });
