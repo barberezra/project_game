@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     //Just pushing the pit ID and then setting the dictionary value manually, will this work?
  
                 });
-                winCheckPits[pitNumber] = pit.textContent; // Make winCheckPits add all other board pits.
+                winCheckPits[pitNumber] = pitAffectedElement.textContent; // this doesnt work
                 console.log(winCheckPits);
             });
         }
