@@ -22,6 +22,26 @@ function range(start, moves) {
     return res;
 }
 
+function gameWin(pits) {
+    var gameContinue = true;
+        for(pitId in pits){
+            if(pitId%7 == 0 ||pits[pitId] == "0"){
+
+            }
+            else if (pits[pitId] != "0"){
+                gameContinue =  false;
+                break;
+                
+        }    
+    }
+    var gameEnd = false;
+    if (gameContinue == false){
+        gameEnd = true;
+    }
+    return gameEnd;
+    }
+    var winCheckPits = {};
+        // ADD UNIQUE GAME IDS
 function welcomeMessage() {
     return "Welcome! Player 1, please click on a pit in your row to start the game.";
 }
@@ -65,12 +85,26 @@ document.addEventListener('DOMContentLoaded', function() {
                         var temp = parseInt(pitAffectedElement.textContent);
                         pitAffectedElement.textContent = parseInt(temp + 1);
                     }
+                    //moved inside loop
+                    //Just pushing the pit ID and then setting the dictionary value manually, will this work?
+ 
                 });
-
-                switchTurn();
-                // notifying users of player turn
-                document.querySelector('h3').innerHTML = players[currentPlayerIndex]+"'s turn:";
+                winCheckPits[pitNumber] = pitAffectedElement.textContent; // this doesnt work (make own loop for board pits)
+                console.log(winCheckPits);
             });
+        }
+    });
+    
+
+    var gameEnd = gameWin(winCheckPits);
+    if(gameEnd == true){
+        console.log('The game is over :)');
+    }
+
+    switchTurn();
+    // notifying users of player turn
+    document.querySelector('h3').innerHTML = players[currentPlayerIndex]+"'s turn:";
+          });
         }
     });
 });
