@@ -32,9 +32,9 @@ function gameWin(pits) {
                 return false;     
         }    
     }
-    
     return gameEnd;
     }
+    
     var winCheckPits = {};
         // ADD UNIQUE GAME IDS
 function welcomeMessage() {
