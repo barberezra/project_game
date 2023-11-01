@@ -88,13 +88,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     //Just pushing the pit ID and then setting the dictionary value manually, will this work?
  
                 });
-                winCheckPits[pitNumber] = pitAffectedElement.textContent; // this doesnt work (make own loop for board pits)
-                console.log(winCheckPits);
+
             });
+
         }
     });
-    
-
+    for(const pit of document.querySelectorAll('.pit')){
+        var pitNumber = pit.getAttribute('data-pit');
+        winCheckPits[pitNumber] = pit.textContent; // this doesnt work (make own loop for board pits)
+    }
+    console.log(winCheckPits);
     var gameEnd = gameWin(winCheckPits);
     if(gameEnd == true){
         console.log('The game is over :)');
@@ -104,6 +107,3 @@ document.addEventListener('DOMContentLoaded', function() {
     // notifying users of player turn
     document.querySelector('h3').innerHTML = players[currentPlayerIndex]+"'s turn:";
           });
-        }
-    });
-});
