@@ -89,6 +89,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     var gameEnd = gameWin(winCheckPits);
                     if(gameEnd == true){
                         console.log('The game is over :)');
+                        var player1 = winCheckPits[7];
+                        var player2 = winCheckPits[14];
+                        console.log("Player 1 score: " + player1 + " Player 2 score: "+ player2);
+                        if(player1>player2){
+                            console.log("Player 1 win");
+                        }
+                        else if(player2>player1){
+                            console.log("Player 2 win");
+                        }
+                        else{
+                            console.log("How did you manage this");
+                        }
                     }
                 
                 });
