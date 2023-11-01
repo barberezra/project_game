@@ -34,7 +34,7 @@ function gameWin(pits) {
     }
     return gameEnd;
     }
-    
+
     var winCheckPits = {};
         // ADD UNIQUE GAME IDS
 function welcomeMessage() {
@@ -81,22 +81,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     //moved inside loop
                     //Just pushing the pit ID and then setting the dictionary value manually, will this work?
- 
+                    for(const pit of document.querySelectorAll('.pit')){
+                        var pitNumber = pit.getAttribute('data-pit');
+                        winCheckPits[pitNumber] = pit.textContent; // this doesnt work (make own loop for board pits)
+                    }
+                    console.log(winCheckPits);
+                    var gameEnd = gameWin(winCheckPits);
+                    if(gameEnd == true){
+                        console.log('The game is over :)');
+                    }
+                
                 });
 
             });
 
         }
     });
-    for(const pit of document.querySelectorAll('.pit')){
-        var pitNumber = pit.getAttribute('data-pit');
-        winCheckPits[pitNumber] = pit.textContent; // this doesnt work (make own loop for board pits)
-    }
-    console.log(winCheckPits);
-    var gameEnd = gameWin(winCheckPits);
-    if(gameEnd == true){
-        console.log('The game is over :)');
-    }
 
     switchTurn();
     // notifying users of player turn
