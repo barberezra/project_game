@@ -1,0 +1,45 @@
+# This starts two services
+# The first is called "web" and uses the Dockerfile in the ./web directory
+# Port 7555 on the real machine forwards to Port 5000 in the "web" container
+
+# The second service is called "api" and uses the Dockerfile in ./api
+# This service exposes port 5000 to other docker container machines
+# ... However, no ports are available to the real machine
+
+services:
+    app:
+      container_name: app
+      build:
+          context: .
+          target: app
+      volumes:
+        - '.:/app'
+        - '/app/node_modules'
+      ports:
+        - 7555:3000
+      environment:
+        - CHOKIDAR_USEPOLLING=true
+    # web:
+    #     container_name: web
+    #     build:
+    #       context: .
+    #       target: web
+    #     ports:
+    #       - "7555:5000"
+    api:
+        container_name: api
+        build:
+          context: .
+          target: api
+        expose:
+          - "5000"
+    db:
+      image: mysql
+      expose:
+        - "3306"
+      environment:
+        MYSQL_ROOT_PASSWORD: thebestgame
+        restart: on-failure
+      volumes:
+        - ./database:/docker-entrypoint-initdb.d/
+        # - ./db-storage:/var/lib/mysql

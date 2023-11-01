@@ -1,0 +1,11 @@
+/* All Pages */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #E9E5D6;
+  color: #362706;
+  text-align:center;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Rubik', sans-serif;
+}
