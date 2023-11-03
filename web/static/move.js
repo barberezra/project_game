@@ -40,76 +40,71 @@ function gameWin(pits) {
 function welcomeMessage() {
     return "Welcome! Player 1, please click on a pit in your row to start the game.";
 }
-
 // watching page activity
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // welcome
     document.querySelector('h3').innerHTML = welcomeMessage();
-
     // tracking pit changes
-    document.querySelectorAll('.pit').forEach(function(pit) {
+    document.querySelectorAll('.pit').forEach(function (pit) {
         // Get the pit number from the data attribute
         var pitNumber = pit.getAttribute('data-pit');
-        
+
         if (pitNumber !== "7" && pitNumber !== "14" && pit.textContent !== "0") {
-            pit.addEventListener('click', function() {
+            pit.addEventListener('click', function () {
                 // Get the pit number from the data attribute
                 var pitNumber = pit.getAttribute('data-pit');
-                // Get list of all affected pits (from next pit to the last pit affected)
+                // Get list of all affected pits (from the next pit to the last pit affected)
                 var pitRange = range(pitNumber, pit.textContent);
 
                 // Send an AJAX request to the server to capture the pit value
                 fetch('/capture_pit', {
                     method: 'POST',
-                    body: JSON.stringify({ pitNumber: pitNumber, pitValue: pit.textContent, pitRange: pitRange }),
+                    body: JSON.stringify({
+                        pitNumber: pitNumber,
+                        pitValue: pit.textContent,
+                        pitRange: pitRange
+                    }),
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 })
-                .then(response => response.json())
-                .then(data => {
-                    // Handle the response from the server if needed
-                    console.log('Pit IDs affected: ' + pitRange);
-                    console.log('Context: ' + pit.textContent + typeof(pit.textContent));
-                    console.log(players[currentPlayerIndex]);
-                    var pitResultElement = document.querySelector('.pit[data-pit="' + pitNumber + '"]');
-                    pitResultElement.textContent = data.pitValue;
-                    for (const pit of pitRange) {
-                        var pitAffectedElement = document.querySelector('.pit[data-pit="' + pit + '"]');
-                        var temp = parseInt(pitAffectedElement.textContent);
-                        pitAffectedElement.textContent = parseInt(temp + 1);
-                    }
+                    .then(response => response.json())
+                    .then(data => {
+                        // Handle the response from the server if needed
+                        console.log('Pit IDs affected: ' + pitRange);
+                        console.log('Context: ' + pit.textContent + typeof (pit.textContent));
+                        console.log(players[currentPlayerIndex]);
+                        var pitResultElement = document.querySelector('.pit[data-pit="' + pitNumber + '"]');
+                        pitResultElement.textContent = data.pitValue;
+                        for (const pit of pitRange) {
+                            var pitAffectedElement = document.querySelector('.pit[data-pit="' + pit + '"]');
+                            var temp = parseInt(pitAffectedElement.textContent);
+                            pitAffectedElement.textContent = parseInt(temp + 1);
+                        }
 
-                    for(const pit of document.querySelectorAll('.pit')){
-                        var pitId = pit.getAttribute('data-pit');
-                        winCheckPits[pitId] = pit.textContent; 
-                    }
-                    console.log(winCheckPits);
-                    var gameEnd = gameWin(winCheckPits);
-                    if(gameEnd == true){
-                        console.log('The game is over :)');
-                        var player1 = winCheckPits[7];
-                        var player2 = winCheckPits[14];
-                        console.log("Player 1 score: " + player1 + " Player 2 score: "+ player2);
-                        if(player1>player2){
-                            console.log("Player 1 win");
+                        for (const pit of document.querySelectorAll('.pit')) {
+                            var pitId = pit.getAttribute('data-pit');
+                            winCheckPits[pitId] = pit.textContent;
                         }
-                        else if(player2>player1){
-                            console.log("Player 2 win");
+                        console.log(winCheckPits);
+                        var gameEnd = gameWin(winCheckPits);
+                        if (gameEnd == true) {
+                            console.log('The game is over :)');
+                            var player1 = winCheckPits[7];
+                            var player2 = winCheckPits[14];
+                            dbString = player1 + " : " + player2;
+                            res = "Player 1 score: " + player1 + " Player 2 score: " + player2;
+                            console.log(res);
+                            if (player1 > player2) {
+                                console.log("Player 1 win");
+                            } else if (player2 > player1) {
+                                console.log("Player 2 win");
+                            } else {
+                                console.log("How did you manage this");
+                            }
                         }
-                        else{
-                            console.log("How did you manage this");
-                        }
-                    }
-                
-                });
-
+                    });
             });
-
-        }
+        };
     });
-
-    switchTurn();
-    // notifying users of player turn
-    document.querySelector('h3').innerHTML = players[currentPlayerIndex]+"'s turn:";
-          });
+});

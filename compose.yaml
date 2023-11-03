@@ -5,15 +5,22 @@
 # The second service is called "api" and uses the Dockerfile in ./api
 # This service exposes port 5000 to other docker container machines
 # ... However, no ports are available to the real machine
+networks:
+    mynetwork:
+      external: true
 
 services:
     web:
         container_name: web
+        depends_on:
+          - db
         build:
           context: .
           target: web
         ports:
           - "7555:5000"
+        networks:
+          - mynetwork
     api:
         container_name: api
         build:
@@ -22,10 +29,13 @@ services:
         expose:
           - "5000"
     db:
+      networks:
+        - mynetwork
       image: mysql
       expose:
         - "3306"
       environment:
+        MYSQL_USER: root
         MYSQL_ROOT_PASSWORD: thebestgame
         restart: on-failure
       volumes:
