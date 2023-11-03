@@ -31,11 +31,12 @@ services:
         networks:
           - mynetwork
     db:
+      container_name: database
       networks:
         - mynetwork
       image: mysql
       expose:
-        - "3306"
+        - '3306'
       environment:
         MYSQL_USER: root
         MYSQL_ROOT_PASSWORD: thebestgame

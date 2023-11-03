@@ -31,18 +31,19 @@ def dbconnect():
     try:
         data = request.get_json()
         conn = mysql.connector.connect(
-            host='mysql',  # Use the service name as the host if you're using Docker Compose
+            host='db',  # Use the service name as the host if you're using Docker Compose
             user='root',
             password='thebestgame',
-            database='stuff'
+            database='stuff',
+            port=3306
         )
 
         cursor = conn.cursor()
 
         # Assuming the JSON data includes a SQL query
         query = data['query']
-
-        cursor.execute(query)
+        val = data['values']
+        cursor.execute(query, val)
         result = cursor.fetchall()
 
         cursor.close()

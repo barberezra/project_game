@@ -92,9 +92,28 @@ document.addEventListener('DOMContentLoaded', function () {
                             console.log('The game is over :)');
                             var player1 = winCheckPits[7];
                             var player2 = winCheckPits[14];
+                            const query = 'INSERT INTO stuff.scores (score) VALUES (%s)';
                             dbString = player1 + " : " + player2;
                             res = "Player 1 score: " + player1 + " Player 2 score: " + player2;
                             console.log(res);
+                            fetch('/dbconnect', {
+                                method: 'POST',
+                                body: JSON.stringify({
+                                    query: query,
+                                    values: [dbString]
+                                }),
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    // Handle the response from the server
+                                    console.log('Response from server:', data);
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                })
                             if (player1 > player2) {
                                 console.log("Player 1 win");
                             } else if (player2 > player1) {
