@@ -26,6 +26,7 @@ ENV FLASK_RUN_HOST=0.0.0.0
 # We install Flask and requests in the container using Pip
 RUN pip install flask
 RUN pip install requests
+RUN pip install mysql-connector-python
 # We want port 5000 (the default Flask port) to be used outside the container
 EXPOSE 5000
 # We copy everything in the current directory on our machine 

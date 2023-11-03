@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request
-import os
+import mysql.connector
 import requests
 app = Flask(__name__, template_folder='./templates')
 
@@ -25,3 +25,29 @@ def capture_pit():
     else:
         # Handle the case where the external API request fails
         return jsonify({'error': 'Failed to capture pit data from the external API'}, 500)
+    
+@app.route('/dbconnect', methods=['POST'])
+def dbconnect():
+    try:
+        data = request.get_json()
+        conn = mysql.connector.connect(
+            host='mysql',  # Use the service name as the host if you're using Docker Compose
+            user='root',
+            password='thebestgame',
+            database='stuff'
+        )
+
+        cursor = conn.cursor()
+
+        # Assuming the JSON data includes a SQL query
+        query = data['query']
+
+        cursor.execute(query)
+        result = cursor.fetchall()
+
+        cursor.close()
+        conn.close()
+
+        return jsonify({'result': result})
+    except Exception as e:
+        return jsonify({'error': str(e)})
