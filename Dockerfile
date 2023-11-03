@@ -37,4 +37,3 @@ COPY . .
 #    This is the command that we want to be executed
 #       flask run
 CMD ["flask", "run"] 
-
