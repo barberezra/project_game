@@ -28,6 +28,8 @@ services:
           target: api
         expose:
           - "5000"
+        networks:
+          - mynetwork
     db:
       networks:
         - mynetwork
