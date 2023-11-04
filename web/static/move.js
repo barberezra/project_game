@@ -93,14 +93,14 @@ document.addEventListener('DOMContentLoaded', function () {
                             var player1 = winCheckPits[7];
                             var player2 = winCheckPits[14];
                             const query = 'INSERT INTO scores (score) VALUES (%s)';
-                            dbString = player1 + " : " + player2;
-                            res = "Player 1 score: " + player1 + " Player 2 score: " + player2;
+                            const dbString = player1 + " : " + player2;
+                            var res = "Player 1 score: " + player1 + " Player 2 score: " + player2;
                             console.log(res);
                             fetch('/dbconnect', {
                                 method: 'POST',
                                 body: JSON.stringify({
                                     query: query,
-                                    values: [dbString]
+                                    values: dbString
                                 }),
                                 headers: {
                                     'Content-Type': 'application/json'
