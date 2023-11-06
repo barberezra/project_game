@@ -92,8 +92,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             console.log('The game is over :)');
                             var player1 = winCheckPits[7];
                             var player2 = winCheckPits[14];
-                            const query = 'INSERT INTO scores (score) VALUES (%s)';
-                            const dbString = player1 + " : " + player2;
+                            var query = 'INSERT INTO scores (score) VALUES (%s)';
+                            var dbString = player1 + " : " + player2;
                             var res = "Player 1 score: " + player1 + " Player 2 score: " + player2;
                             console.log(res);
                             fetch('/dbconnect', {
