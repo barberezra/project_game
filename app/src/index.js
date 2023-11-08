@@ -28,6 +28,7 @@ import HowTo from './components/Home/HowTo';
     //     .then(data => setMessage(data.message))
     //     .catch(error => setError(error.message));
     // }, []);
+  
 const root = createRoot(document.getElementById('root'));
 root.render(
   <div>
