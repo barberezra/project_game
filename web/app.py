@@ -43,12 +43,11 @@ def dbconnect():
         # Assuming the JSON data includes a SQL query
         query = data['query']
         val = data['values']
-        cursor.execute(query, val)
-        result = cursor.fetchall()
+        cursor.execute(query, val) # Doesn't update anything
 
         cursor.close()
         conn.close()
 
-        return jsonify({'result': result})
+        return jsonify({'result': query + " " + str(val[0])})
     except Exception as e:
         return jsonify({'error': str(e)})
