@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             console.log('The game is over :)');
                             var player1 = winCheckPits[7];
                             var player2 = winCheckPits[14];
-                            var query = 'INSERT INTO scores (score) VALUES (%s)';
+                            var query = 'INSERT INTO scores (score) VALUES(%s)';
                             var dbString = player1 + " : " + player2;
                             var res = "Player 1 score: " + player1 + " Player 2 score: " + player2;
                             console.log(res);
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 method: 'POST',
                                 body: JSON.stringify({
                                     query: query,
-                                    values: dbString
+                                    values: [dbString]
                                 }),
                                 headers: {
                                     'Content-Type': 'application/json'
