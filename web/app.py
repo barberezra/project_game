@@ -44,7 +44,7 @@ def dbconnect():
         query = data['query']
         val = data['values']
         cursor.execute(query, val) # Doesn't update anything
-
+        conn.commit()
         cursor.close()
         conn.close()
 
