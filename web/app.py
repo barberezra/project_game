@@ -48,6 +48,6 @@ def dbconnect():
         cursor.close()
         conn.close()
 
-        return jsonify({'result': query + " " + str(val[0])})
+        return jsonify({'result': query + " " + str(val)})
     except Exception as e:
         return jsonify({'error': str(e)})
