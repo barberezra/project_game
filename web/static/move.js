@@ -1,101 +1,99 @@
-// Functionality for Game Moves
-
-// player turns
-const players = ["Player 1", "Player 2"];
-let currentPlayerIndex = 0;
-
-// switch player turns
-function switchTurn() {
-    currentPlayerIndex = (currentPlayerIndex + 1) % 2;
-    document.querySelector('h3').innerHTML = `Welcome! ${players[currentPlayerIndex]}, it's your turn.`;
-}
-
-// finds the range of affected pits from click dispersal
-function range(start, moves) {
-    let res = [];
-    for (let i = 1; i <= parseInt(moves); i++) {
-        res.push((parseInt(start) + i) % 14 || 14);
-    }
-    return res;
-}
-
-function welcomeMessage() {
-    return "Welcome! Player 1, please click on a pit in your row to start the game.";
-}
-
-// watching page activity
 document.addEventListener('DOMContentLoaded', function() {
-    // welcome
-    document.querySelector('h3').innerHTML = welcomeMessage();
+    const playerTurnElement = document.querySelector('h3');
+    
+    // initializing game settings
+    let currentPlayer = 1; 
+    let boardState = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0]; // the initial distribution of stones
 
-    // tracking pit changes
-    document.querySelectorAll('.pit').forEach(function(pit) {
-        // Get the pit number from the data attribute
-        let pitNumber = parseInt(pit.getAttribute('data-pit'));
-        
-        if (pitNumber !== 7 && pitNumber !== 14 && pit.textContent !== "0") {
-            pit.addEventListener('click', function() {
-                if ((currentPlayerIndex === 0 && pitNumber > 6) || (currentPlayerIndex === 1 && pitNumber < 7)) {
-                    alert("Be patient! It's not your turn! :)");
-                    return;
+    // function to update the board's visual state
+    const updateBoard = (newBoardState) => {
+        newBoardState.forEach((stones, index) => {
+            // for each pit, find the corresponding element and update its text content
+            const pitElement = document.querySelector(`.pit[data-pit="${index + 1}"]`);
+            pitElement.textContent = stones.toString();
+        });
+    };
+
+    // function to check if the pit clicked is valid for the current player
+    const checkTurn = (pitIndex) => {
+        // player 1 can only select pits 1-6, and player 2 can only select pits 8-13
+        return (currentPlayer === 1 && pitIndex < 6) || (currentPlayer === 2 && pitIndex >= 7 && pitIndex < 13);
+    };
+
+    // function to handle making a move
+    const makeMove = (pitIndex) => {
+        fetch('/move', {
+            method: 'POST',
+            body: JSON.stringify({
+                board_state: boardState, // current state of the board
+                pit_index: pitIndex,     // the selected pit index
+                current_player: currentPlayer // the current player number
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // update the board with the new state
+            boardState = data.board_state;
+            updateBoard(boardState);
+
+            // check if the game is over (i do not think this works)
+            if (data.game_over) {
+                playerTurnElement.textContent = `Game over! Player ${currentPlayer} wins!`;
+                // disable all pits to prevent further moves
+                document.querySelectorAll('.pit').forEach(pit => pit.removeEventListener('click', pitClickHandler));
+            } else {
+                // announce captured stones if any *unnecessary
+                if (data.captured_stones > 0) {
+                    // determine the opposite player
+                    const oppositePlayer = currentPlayer === 1 ? 2 : 1;
+                    alert(`Player ${currentPlayer} captured ${data.captured_stones} stones from Player ${oppositePlayer}!`);
                 }
-                
-                // Get list of all affected pits (from next pit to the last pit affected)
-                let pitRange = range(pitNumber, pit.textContent);
 
-                // Send an AJAX request to the server to capture the pit value
-                fetch('/capture_pit', {
-                    method: 'POST',
-                    body: JSON.stringify({ pitNumber: pitNumber, pitValue: pit.textContent, pitRange: pitRange }),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok ' + response.statusText);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    // Handle the response from the server if needed
-                    console.log('Pit value captured: ' + data.pitValue);
-                    console.log('Pit values affected: ' + pitRange);
-                    var pitResultElement = document.querySelector('.pit[data-pit="' + pitNumber + '"]');
-                    pitResultElement.textContent = "0";
-                    
-                    for (const pit of pitRange) {
-                        var pitAffectedElement = document.querySelector('.pit[data-pit="' + pit + '"]');
-                        var temp = parseInt(pitAffectedElement.textContent);
-                        pitAffectedElement.textContent = temp + 1;
-                    }
+                // change the turn if the current player doesn't get another turn
+                if (!data.another_turn) {
+                    currentPlayer = currentPlayer === 1 ? 2 : 1;
+                }
+                // update the turn message
+                playerTurnElement.textContent = `Player ${currentPlayer}'s turn.`;
+                // if the current player gets another turn, append the message
+                if (data.another_turn) {
+                    playerTurnElement.textContent += ` You get another turn!`;
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    };
 
-                    // Capture mechanism starts here
-                    if (data.capture) {
-                        console.log("Capture occurred on pit: " + pitNumber);
-       
-                        var oppositePit = 14 - pitNumber;
-                        var oppositePitElement = document.querySelector('.pit[data-pit="' + oppositePit + '"]');
-       
-                        // Capture stones from the opposite pit
-                        var capturedStones = parseInt(oppositePitElement.textContent);
-                        oppositePitElement.textContent = "0";
-       
-                        // Determine which Mancala store to add captured stones to. 
-                        var mancalaStorePit = (pitNumber <= 6) ? "7" : "14";
-                        var mancalaStoreElement = document.querySelector('.pit[data-pit="' + mancalaStorePit + '"]');
-       
-                        // Add captured stones to the Mancala store
-                        mancalaStoreElement.textContent = parseInt(mancalaStoreElement.textContent) + capturedStones + 1; // +1 for the last stone that caused the capture
-                    }
+    // function to handle a click event on a pit
+    const pitClickHandler = (event) => {
+        const pitElement = event.target;
+        // get the index of the pit clicked, adjusting for zero-indexed array
+        const pitIndex = parseInt(pitElement.getAttribute('data-pit')) - 1;
 
-                    // Switch turns after a move
-                    switchTurn();
-                })
-                .catch((error) => {
-                    console.error('There has been a problem with your fetch operation:', error);
-                });
-            });
+        // check if it's the correct player's turn and the correct pit was selected
+        if (!checkTurn(pitIndex)) {
+            alert("It's not your turn... or you selected the wrong pit!");
+            return;
         }
+
+        // if valid, make the move
+        makeMove(pitIndex);
+    };
+
+    // attach the click event handler to each pit on the board
+    document.querySelectorAll('.pit').forEach(pit => {
+        pit.addEventListener('click', pitClickHandler);
     });
+
+    playerTurnElement.textContent = `Player ${currentPlayer}'s turn!`;
 });
