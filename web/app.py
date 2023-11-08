@@ -39,12 +39,14 @@ def dbconnect():
         )
 
         cursor = conn.cursor()
-
+        
         # Assuming the JSON data includes a SQL query
         query = data['query']
         val = data['values']
-        cursor.execute(query, val) # Doesn't update anything
-        conn.commit()
+        
+        cursor.execute(query, val) # Insert value to transaction
+        conn.commit() #Commit changes to database
+        
         cursor.close()
         conn.close()
 
