@@ -99,13 +99,15 @@ document.addEventListener('DOMContentLoaded', function () {
                             if (player1 > player2) {
                                 console.log("Player 1 win");
                                 var winner = "numWins1";
-                                var loser = 'numWins2'
+                                var loser = 'numWins2';
                             } else if (player2 > player1) {
                                 console.log("Player 2 win");
                                 var winner = 'numWins2';
-                                var loser = 'numWins1'
+                                var loser = 'numWins1';
                             } else {
                                 console.log("How did you manage this");
+                                var winner = 'numWins1';
+                                var loser = 'numWins2';
                             }
                             var incrementQuery = {query:'SELECT MAX(%s) AS maxWins, (SELECT MAX(%s) FROM scores) AS maxLoserWins FROM scores', values: [winner, loser]};
                             console.log(res);
@@ -122,9 +124,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             .then(data => {
                                 // Handle the response from the server
                                 console.log('Response from server:', data);
-                                if (data && data[0] && data[0].incrementWins) {
-                                    incWins = data[0].incrementWins + 1;
-                                    sameVal = data[0].maxLoserWins;
+                                if (data && data.maxWins !== undefined) {
+                                    incWins = data['maxWins'] + 1; // these don't work (FIX)
+                                    sameVal = data['maxLoserWins'];
                                 }
                             })
                             .catch(error => {
@@ -139,6 +141,16 @@ document.addEventListener('DOMContentLoaded', function () {
                                 ), headers: {
                                     'Content-Type': 'application/json'
                                 }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                // Handle the response from the server
+                                console.log(insertQuery);
+                                console.log('Response from server:', data);
+                                
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
                             })
                         }
                     });

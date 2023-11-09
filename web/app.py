@@ -49,12 +49,12 @@ def dbconnect():
             incWins = insertQuery['values'][3]
             sameVal = insertQuery['values'][4]
             cursor.execute(insertQuery['query'], (winner, loser, score, incWins, sameVal))
-            result = cursor.fetchall()
         elif "incrementQuery" in data:
             incrementQuery = data['incrementQuery']
             winner = incrementQuery['values'][0]
             loser = incrementQuery['values'][1]
             cursor.execute(incrementQuery['query'], (winner, loser))
+            conn.commit()
             result = cursor.fetchall()
         
         conn.commit() #Commit changes to database
