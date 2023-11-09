@@ -43,19 +43,24 @@ def dbconnect():
         # Assuming the JSON data includes a SQL query
         if "insertQuery" in data: 
             insertQuery = data['insertQuery']
-            score = data['values'][1]
-            incWins = data['values'][2]
-            cursor.execute(insertQuery, (player, score, incWins))
+            winner = insertQuery['values'][0]
+            loser = insertQuery['values'][1]
+            score = insertQuery['values'][2]
+            incWins = insertQuery['values'][3]
+            sameVal = insertQuery['values'][4]
+            cursor.execute(insertQuery['query'], (winner, loser, score, incWins, sameVal))
+            result = cursor.fetchall()
         elif "incrementQuery" in data:
-            winsQuery = data['incrementQuery']
-            player = data['playerWhoWon']
-            cursor.execute(winsQuery, (player,))
+            incrementQuery = data['incrementQuery']
+            winner = incrementQuery['values'][0]
+            loser = incrementQuery['values'][1]
+            cursor.execute(incrementQuery['query'], (winner, loser))
+            result = cursor.fetchall()
         
         conn.commit() #Commit changes to database
-        
         cursor.close()
         conn.close()
 
-        return jsonify({"result": data})
+        return jsonify({"result": result})
     except Exception as e:
         return jsonify({'error': str(e)})
