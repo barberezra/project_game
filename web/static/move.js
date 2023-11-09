@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 var winner = 'numWins1';
                                 var loser = 'numWins2';
                             }
-                            var incrementQuery = {query:'SELECT MAX(%s) AS maxWins, (SELECT MAX(%s) FROM scores) AS maxLoserWins FROM scores', values: [winner, loser]};
+                            var incrementQuery = {query: 'SELECT MAX(%s) AS maxWins, MAX(%s) AS maxLoserWins FROM scores', values: [winner, loser]};
                             console.log(res);
                             fetch('/dbconnect', {
                                 method: 'POST',
@@ -121,33 +121,35 @@ document.addEventListener('DOMContentLoaded', function () {
                                 }
                             })
                             .then(response => response.json())
-                            .then(data => {
+                            .then(findResult => {
                                 // Handle the response from the server
-                                console.log('Response from server:', data);
+                                const findData = findResult[0];
+                                console.log('Response from server:', findData);
                                 if (data && data.maxWins !== undefined) {
-                                    incWins = data['maxWins'] + 1; // these don't work (FIX)
-                                    sameVal = data['maxLoserWins'];
+                                    incWins = data.maxWins + 1; // these don't work (FIX)
+                                    sameVal = data.maxLoserWins;
                                 }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                            })
-                            var insertQuery = {query: 'INSERT INTO scores (score, %s, %s) VALUES (%s, %s, %s)', values: [winner, loser, dbString, incWins, sameVal]};
-                            fetch('/dbconnect', {
-                                method: 'POST',
-                                body: JSON.stringify({
-                                    insertQuery: insertQuery
-                                }
-                                ), headers: {
-                                    'Content-Type': 'application/json'
-                                }
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                // Handle the response from the server
-                                console.log(insertQuery);
-                                console.log('Response from server:', data);
-                                
+                                var insertQuery = {query: 'INSERT INTO scores (score, %s, %s) VALUES (%s, %s, %s)', values: [winner, loser, dbString, incWins, sameVal]};
+                                fetch('/dbconnect', {
+                                    method: 'POST',
+                                    body: JSON.stringify({
+                                        insertQuery: insertQuery
+                                    }
+                                    ), headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                })
+                                .then(response => response.json())
+                                .then(insertResult => {
+                                    // Handle the response from the server
+                                    const insertData = insertResult[0];
+                                    console.log(insertQuery);
+                                    console.log('Response from server:', insertData);
+                                    
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                })
                             })
                             .catch(error => {
                                 console.error('Error:', error);
