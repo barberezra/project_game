@@ -41,16 +41,15 @@ def dbconnect():
         cursor = conn.cursor()
         
         # Assuming the JSON data includes a SQL query
-        if data['insertQuery'] != None: 
+        if "insertQuery" in data: 
             insertQuery = data['insertQuery']
-            whoWon = data['values[0]']
-            score = data['values[1]']
-            incWins = data['values[2]']
-            cursor.execute(insertQuery, player, score, incWins)
-        elif (data['incrementQuery'] != None):
+            score = data['values'][1]
+            incWins = data['values'][2]
+            cursor.execute(insertQuery, (player, score, incWins))
+        elif "incrementQuery" in data:
             winsQuery = data['incrementQuery']
             player = data['playerWhoWon']
-            cursor.execute(whoWon, winsQuery, player)
+            cursor.execute(winsQuery, (player,))
         
         conn.commit() #Commit changes to database
         
