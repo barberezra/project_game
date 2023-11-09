@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 var winner = 'numWins1';
                                 var loser = 'numWins2';
                             }
-                            var incrementQuery = {query: 'SELECT MAX({0}) AS maxWins, MAX({1}) AS maxLoserWins FROM scores', values: [winner, loser]};
+                            var incrementQuery = {query: `SELECT MAX(${winner}) AS maxWins, MAX(${loser}) AS maxLoserWins FROM scores`};
                             console.log(res);
                             fetch('/dbconnect', {
                                 method: 'POST',
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 // Handle the response from the server
                                 console.log('Response from server:', findResult);
                                 if (data && data[0] !== undefined) {
-                                    incWins = data[0] + 1; // these don't work (FIX)
+                                    incWins = data[0] + 1;
                                     sameVal = data[1];
                                 }
                                 var insertQuery = {query: `INSERT INTO scores (score, ${winner}, ${loser}) VALUES (%s, %s, %s)`, values: [dbString, incWins, sameVal]};

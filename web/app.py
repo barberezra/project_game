@@ -50,9 +50,7 @@ def dbconnect():
             
         if "incrementQuery" in data:
             incrementQuery = data['incrementQuery']
-            winner = incrementQuery['values'][0]
-            loser = incrementQuery['values'][1]
-            query = incrementQuery['query'].format(winner, loser)
+            query = incrementQuery['query']
             cursor.execute(query)
             result = cursor.fetchall()
         
