@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 var winner = 'numWins1';
                                 var loser = 'numWins2';
                             }
-                            var incrementQuery = {query: 'SELECT MAX(%s) AS maxWins, MAX(%s) AS maxLoserWins FROM scores', values: [winner, loser]};
+                            var incrementQuery = {query: 'SELECT MAX({0}) AS maxWins, MAX({1}) AS maxLoserWins FROM scores', values: [winner, loser]};
                             console.log(res);
                             fetch('/dbconnect', {
                                 method: 'POST',
@@ -123,28 +123,26 @@ document.addEventListener('DOMContentLoaded', function () {
                             .then(response => response.json())
                             .then(findResult => {
                                 // Handle the response from the server
-                                const findData = findResult[0];
-                                console.log('Response from server:', findData);
-                                if (data && data.maxWins !== undefined) {
-                                    incWins = data.maxWins + 1; // these don't work (FIX)
-                                    sameVal = data.maxLoserWins;
+                                console.log('Response from server:', findResult);
+                                if (data && data[0] !== undefined) {
+                                    incWins = data[0] + 1; // these don't work (FIX)
+                                    sameVal = data[1];
                                 }
-                                var insertQuery = {query: 'INSERT INTO scores (score, %s, %s) VALUES (%s, %s, %s)', values: [winner, loser, dbString, incWins, sameVal]};
+                                var insertQuery = {query: `INSERT INTO scores (score, ${winner}, ${loser}) VALUES (%s, %s, %s)`, values: [dbString, incWins, sameVal]};
                                 fetch('/dbconnect', {
                                     method: 'POST',
                                     body: JSON.stringify({
                                         insertQuery: insertQuery
-                                    }
-                                    ), headers: {
+                                    }), 
+                                    headers: {
                                         'Content-Type': 'application/json'
                                     }
                                 })
                                 .then(response => response.json())
                                 .then(insertResult => {
                                     // Handle the response from the server
-                                    const insertData = insertResult[0];
                                     console.log(insertQuery);
-                                    console.log('Response from server:', insertData);
+                                    console.log('Response from server:', insertResult);
                                     
                                 })
                                 .catch(error => {
