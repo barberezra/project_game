@@ -41,15 +41,19 @@ def dbconnect():
         cursor = conn.cursor()
         
         # Assuming the JSON data includes a SQL query
-        query = data['query']
-        val = data['values']
+        if data['insertQuery'] != None: 
+            insertQuery = data['insertQuery']
+            score = data['values']
+        elif (data['incrementQuery'] != None):
+            winsQuery = data['incrementQuery']
+            player = data['playerWhoWon']
+            cursor.execute(winsQuery, player)
         
-        cursor.execute(query, val) # Insert value to transaction
         conn.commit() #Commit changes to database
         
         cursor.close()
         conn.close()
 
-        return jsonify({'result': query + " " + str(val)})
+        return jsonify({"result": data})
     except Exception as e:
         return jsonify({'error': str(e)})

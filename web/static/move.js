@@ -92,35 +92,47 @@ document.addEventListener('DOMContentLoaded', function () {
                             console.log('The game is over :)');
                             var player1 = winCheckPits[7];
                             var player2 = winCheckPits[14];
-                            var query = 'INSERT INTO scores (score) VALUES (%s)';
                             var dbString = player1 + " : " + player2;
                             var res = "Player 1 score: " + player1 + " Player 2 score: " + player2;
+                            if (player1 > player2) {
+                                console.log("Player 1 win");
+                                var playerWhoWon: 'numWins1';
+                            } else if (player2 > player1) {
+                                console.log("Player 2 win");
+                                var playerWhoWon: 'numWins2';
+                            } else {
+                                console.log("How did you manage this");
+                            }
+                            var incrementQuery = {query: 'SELECT MAX(%s) AS incrementWins FROM scores', playerWhoWon: playerWhoWon};
                             console.log(res);
                             fetch('/dbconnect', {
                                 method: 'POST',
                                 body: JSON.stringify({
-                                    query: query,
-                                    values: [dbString]
+                                    incrementQuery: incrementQuery
                                 }),
                                 headers: {
                                     'Content-Type': 'application/json'
                                 }
-                                })
-                                .then(response => response.json())
-                                .then(data => {
-                                    // Handle the response from the server
-                                    console.log('Response from server:', data);
-                                })
-                                .catch(error => {
-                                    console.error('Error:', error);
-                                })
-                            if (player1 > player2) {
-                                console.log("Player 1 win");
-                            } else if (player2 > player1) {
-                                console.log("Player 2 win");
-                            } else {
-                                console.log("How did you manage this");
-                            }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                // Handle the response from the server
+                                console.log('Response from server:', data);
+                                if (data && data[0] && data[0].incrementWins) {
+                                    var incWins = data[0].incrementWins + 1;
+                                    console.log(str(incWins));
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            })
+                            var insertQuery = {query: 'INSERT INTO scores (score, %s) VALUES (%s, %s)', values: [playerWhoWon, dbString, incWins];
+                            fetch('/dbconnect', {
+                                method: 'POST',
+                                body: JSON.stringify(
+                                    insertQuery: insertQuery
+                                )
+                            })
                         }
                     });
             });

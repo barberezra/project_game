@@ -3,8 +3,8 @@ USE stuff;
 CREATE TABLE IF NOT EXISTS scores (
     gameID INT NOT NULL AUTO_INCREMENT,
     score VARCHAR(100) NOT NULL,
-    numWins1 INT,
-    numWins2 INT,
+    numWins1 INT DEFAULT 0,
+    numWins2 INT DEFAULT 0,
     PRIMARY KEY (gameID)
 );
 CREATE USER IF NOT EXISTS 'root'@'localhost' IDENTIFIED BY 'thebestgame';
