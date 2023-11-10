@@ -124,9 +124,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             .then(findResult => {
                                 // Handle the response from the server
                                 console.log('Response from server:', findResult);
-                                if (data && data[0] !== undefined) {
-                                    incWins = data[0] + 1;
-                                    sameVal = data[1];
+                                if (data && findResult[0] !== undefined) {
+                                    incWins = findResult[0] + 1;
+                                    sameVal = findResult[1];
                                 }
                                 var insertQuery = {query: `INSERT INTO scores (score, ${winner}, ${loser}) VALUES (%s, %s, %s)`, values: [dbString, incWins, sameVal]};
                                 fetch('/dbconnect', {
