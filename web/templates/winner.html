@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            margin-top: 10px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px; /* Add margin for spacing */
+        }
+    </style>
+</head>
+<body>
+    <h1>Winner</h1>
+    <p>{{ winner_message }}</p>
+    <p>Number of games Player 1 won: {{ total_wins1 }}</p>
+    <p>Number of games Player 2 won: {{ total_wins2 }}</p>
+    <a href="{{ url_for('load') }}"><button>Go Back to Home</button></a>
+</body>
+</html>
