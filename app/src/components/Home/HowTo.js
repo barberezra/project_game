@@ -1,6 +1,7 @@
+// Instructions page on how to play Mancala
+
 import React from "react";
 import { Link } from 'react-router-dom';
-
 
 const HowTo = () => (
     <div>
