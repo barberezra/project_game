@@ -1,0 +1,49 @@
+.Game {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .board {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .board button {
+    margin: 5px;
+    padding: 20px;
+    font-size: 20px;
+    width: 80px;
+    cursor: pointer;
+  }
+  .pits {
+    border: 3px blue solid;
+    display: inline-block;
+  }
+
+  .scores {
+    border: 4px green solid;
+    display: inline-block;
+  }
+  
+  .pit {
+    background-color: #f0f0f0;
+    color: black;
+  }
+  
+  .pit.not-clickable {
+    cursor: not-allowed;
+    background-color: #e0e0e0;
+  }
+
+  .pit.score {
+    width: 88px;
+    height: 111px;
+  }
+  
+  .turn {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  

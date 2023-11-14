@@ -43,14 +43,17 @@ class PlayingPits extends React.Component {
         var pitRange = range(this.state.pitPosition, this.state.pitValue);
         this.setState({
             isDisabled: !this.state.isDisabled,
-            pitValue: 0,
+            pitValue: 0
         });
 
-        document.querySelectorAll('.all').forEach(function(pit) {
-            for (const pitNum of pitRange) {
-                
-            }
-        });
+        // UPDATE PITS
+        // document.querySelectorAll('.all').forEach(function(pit) {
+        //     for (const pitNum of pitRange) {
+        //         if (pit.id == pitNum) {
+        //             pit.innerHTML = parseInt(pit.innerHTML) + 1
+        //         }
+        //     }
+        // });
 
         // isGameOver();
         console.log('pos ' + this.state.pitPosition);
@@ -61,13 +64,13 @@ class PlayingPits extends React.Component {
     render() {
         if (this.state.pitGroup === 1) {
             return (
-                <button id={this.state.pitPosition}  className="squares all" onClick={this.handleClick}>
+                <button disabled={this.state.isDisabled} id={this.state.pitPosition}  className="squares all" onClick={this.handleClick}>
                     { this.state.pitValue }
                 </button>
             );
         } else {
             return (
-                <button id={this.state.pitPosition}  className="squares all" onClick={this.handleClick}>
+                <button disabled={!this.state.isDisabled} id={this.state.pitPosition}  className="squares all" onClick={this.handleClick}>
                     { this.state.pitValue }
                 </button>
             );

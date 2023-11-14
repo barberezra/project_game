@@ -7,6 +7,7 @@ import './index.css';
 import Game from './components/Game/Game.js';
 import Home from './components/Home/Home';
 import HowTo from './components/Home/HowTo';
+import Done from './components/Game/Done.js';
 
     // const [message, setMessage] = useState('');
     // const [error, setError] = useState('');
@@ -37,6 +38,7 @@ root.render(
         <Route exact path="/" element={<Home />} />
         <Route exact path="/how_to" element={<HowTo />} />
         <Route exact path="/game" element={<Game />} />
+        <Route exact path="/done" element={ <Done />}/>
       </Routes>
     </Router>
   </div>
