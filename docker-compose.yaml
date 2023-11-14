@@ -9,12 +9,12 @@
 services:
     app:
       container_name: app
-      build:
-          context: .
-          target: app
-      volumes:
-        - '.:/app'
-        - '/app/node_modules'
+      build: ./app
+   #       context: .
+   #       target: app
+   #   volumes:
+   #     - './app:/app'
+   #     - '/app/node_modules'
       ports:
         - 7555:3000
       environment:
@@ -26,13 +26,13 @@ services:
     #       target: web
     #     ports:
     #       - "7555:5000"
-    api:
-        container_name: api
-        build:
-          context: .
-          target: api
-        expose:
-          - "5000"
+    # api:
+    #     container_name: api
+    #     build:
+    #       context: .
+    #       target: api
+    #     expose:
+    #       - "5000"
     db:
       image: mysql
       expose:
