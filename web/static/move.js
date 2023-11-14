@@ -1,160 +1,216 @@
-// Functionality for Game Moves
+document.addEventListener('DOMContentLoaded', function() {
+    const playerTurnElement = document.querySelector('h3');
+    
+    // initializing game settings
+    let currentPlayer = 1; 
+    let boardState = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0]; // the initial distribution of stones
 
-// player turns
-const players = ["Player 1", "Player 2"];
-let currentPlayerIndex = 0;
+    // function to update the board's visual state
+    const updateBoard = (newBoardState) => {
+        newBoardState.forEach((stones, index) => {
+            // for each pit, find the corresponding element and update its text content
+            const pitElement = document.querySelector(`.pit[data-pit="${index + 1}"]`);
+            pitElement.textContent = stones.toString();
+        });
+    };
 
-// switch player turns
-function switchTurn() {
-  currentPlayerIndex = (currentPlayerIndex + 1) % 2;
-}
+    // function to check if the pit clicked is valid for the current player
+    const checkTurn = (pitIndex) => {
+        // player 1 can only select pits 1-6, and player 2 can only select pits 8-13
+        return (currentPlayer === 1 && pitIndex < 6) || (currentPlayer === 2 && pitIndex >= 7 && pitIndex < 13);
+    };
 
-// finds the range of affected pits from click dispersal
-function range(start, moves) {
-    var res = [];
-    for (let i = 1; i <= parseInt(moves); i++) {
-        if ((parseInt(start) + i) == 14) {
-            res.push(14);
-        } else {
-            res.push((parseInt(start) + i) % 14);
-        }
-    }
-    return res;
-}
+    // // function to handle making a move
+    // const makeMove = (pitIndex) => {
+    //     fetch('/move', {
+    //         method: 'POST',
+    //         body: JSON.stringify({
+    //             board_state: boardState, // current state of the board
+    //             pit_index: pitIndex,     // the selected pit index
+    //             current_player: currentPlayer // the current player number
+    //         }),
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         }
+    //     })
+    //     .then(response => {
+    //         if (!response.ok) {
+    //             throw new Error(`HTTP error! status: ${response.status}`);
+    //         }
+    //         return response.json();
+    //     })
+    //     .then(data => {
+    //         // update the board with the new state
+    //         boardState = data.board_state;
+    //         updateBoard(boardState);
 
-function gameWin(pits) {
-    var gameEnd = false;
-        for(pitId in pits){
-            if(pitId%7 == 0 ||pits[pitId] == "0"){
-                gameEnd = true;
+    //         // check if the game is over (i do not think this works)
+    //         if (data.game_over) {
+    //             playerTurnElement.textContent = `Game over! Player ${currentPlayer} wins!`;
+    //             // disable all pits to prevent further moves
+    //             document.querySelectorAll('.pit').forEach(pit => pit.removeEventListener('click', pitClickHandler));
+    //         } else {
+    //             // announce captured stones if any *unnecessary
+    //             if (data.captured_stones > 0) {
+    //                 // determine the opposite player
+    //                 const oppositePlayer = currentPlayer === 1 ? 2 : 1;
+    //                 alert(`Player ${currentPlayer} captured ${data.captured_stones} stones from Player ${oppositePlayer}!`);
+    //             }
+
+    //             // change the turn if the current player doesn't get another turn
+    //             if (!data.another_turn) {
+    //                 currentPlayer = currentPlayer === 1 ? 2 : 1;
+    //             }
+    //             // update the turn message
+    //             playerTurnElement.textContent = `Player ${currentPlayer}'s turn.`;
+    //             // if the current player gets another turn, append the message
+    //             if (data.another_turn) {
+    //                 playerTurnElement.textContent += ` You get another turn!`;
+    //             }
+    //         }
+    //     })
+    //     .catch(error => {
+    //         console.error('Error:', error);
+    //     });
+    // };
+
+    const makeMove = (pitIndex) => {
+        fetch('/move', {
+            method: 'POST',
+            body: JSON.stringify({
+                board_state: boardState,
+                pit_index: pitIndex,
+                current_player: currentPlayer
+            }),
+            headers: {
+                'Content-Type': 'application/json'
             }
-            else if (pitId%7 != 0 && pits[pitId] != "0"){
-                return false;     
-        }    
-    }
-    return gameEnd;
-    }
-
-    var winCheckPits = {};
-        // ADD UNIQUE GAME IDS
-function welcomeMessage() {
-    return "Welcome! Player 1, please click on a pit in your row to start the game.";
-}
-var incWins;
-var sameVal;
-// watching page activity
-document.addEventListener('DOMContentLoaded', function () {
-    // welcome
-    document.querySelector('h3').innerHTML = welcomeMessage();
-    // tracking pit changes
-    document.querySelectorAll('.pit').forEach(function (pit) {
-        // Get the pit number from the data attribute
-        var pitNumber = pit.getAttribute('data-pit');
-
-        if (pitNumber !== "7" && pitNumber !== "14" && pit.textContent !== "0") {
-            pit.addEventListener('click', function () {
-                // Get the pit number from the data attribute
-                var pitNumber = pit.getAttribute('data-pit');
-                // Get list of all affected pits (from the next pit to the last pit affected)
-                var pitRange = range(pitNumber, pit.textContent);
-
-                // Send an AJAX request to the server to capture the pit value
-                fetch('/capture_pit', {
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            boardState = data.board_state;
+            updateBoard(boardState);
+    
+            if (data.game_over) {
+                playerTurnElement.textContent = `Game over! Player ${currentPlayer} wins!`;
+                document.querySelectorAll('.pit').forEach(pit => pit.removeEventListener('click', pitClickHandler));
+                checkAndHandleGameEnd();
+            } else {
+                if (data.captured_stones > 0) {
+                    const oppositePlayer = currentPlayer === 1 ? 2 : 1;
+                    alert(`Player ${currentPlayer} captured ${data.captured_stones} stones from Player ${oppositePlayer}!`);
+                }
+    
+                if (!data.another_turn) {
+                    currentPlayer = currentPlayer === 1 ? 2 : 1;
+                }
+                playerTurnElement.textContent = `Player ${currentPlayer}'s turn.`;
+                if (data.another_turn) {
+                    playerTurnElement.textContent += ` You get another turn!`;
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    };
+    
+    const checkAndHandleGameEnd = () => {
+        const winCheckPits = {};
+        for (const pit of document.querySelectorAll('.pit')) {
+            var pitId = pit.getAttribute('data-pit');
+            winCheckPits[pitId] = pit.textContent;
+        }
+        var gameEnd = gameWin(winCheckPits);
+        if (gameEnd == true) {
+            console.log('The game is over :)');
+            var player1 = winCheckPits[7];
+            var player2 = winCheckPits[14];
+            var dbString = player1 + " : " + player2;
+            var res = "Player 1 score: " + player1 + " Player 2 score: " + player2;
+            var winner, loser;
+            if (player1 > player2) {
+                console.log("Player 1 win");
+                winner = "numWins1";
+                loser = 'numWins2';
+            } else if (player2 > player1) {
+                console.log("Player 2 win");
+                winner = 'numWins2';
+                loser = 'numWins1';
+            } else {
+                console.log("It's a tie");
+                return; // Handle a tie situation appropriately
+            }
+    
+            var incrementQuery = {query: `SELECT MAX(${winner}) AS maxWins, MAX(${loser}) AS maxLoserWins FROM scores`};
+            console.log(res);
+            fetch('/dbconnect', {
+                method: 'POST',
+                body: JSON.stringify({
+                    incrementQuery: incrementQuery
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(findResult => {
+                console.log('Response from server:', findResult);
+                if (findResult && findResult.result !== undefined) {
+                    incWins = parseInt(findResult.result[0][0]) + 1;
+                    sameVal = parseInt(findResult.result[0][1]);
+                }
+                var insertQuery = {query: `INSERT INTO scores (score, ${winner}, ${loser}) VALUES (%s, %s, %s)`, values: [dbString, incWins, sameVal]};
+                fetch('/dbconnect', {
                     method: 'POST',
                     body: JSON.stringify({
-                        pitNumber: pitNumber,
-                        pitValue: pit.textContent,
-                        pitRange: pitRange
-                    }),
+                        insertQuery: insertQuery
+                    }), 
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 })
-                    .then(response => response.json())
-                    .then(data => {
-                        // Handle the response from the server if needed
-                        console.log('Pit IDs affected: ' + pitRange);
-                        console.log('Context: ' + pit.textContent + typeof (pit.textContent));
-                        console.log(players[currentPlayerIndex]);
-                        var pitResultElement = document.querySelector('.pit[data-pit="' + pitNumber + '"]');
-                        pitResultElement.textContent = data.pitValue;
-                        for (const pit of pitRange) {
-                            var pitAffectedElement = document.querySelector('.pit[data-pit="' + pit + '"]');
-                            var temp = parseInt(pitAffectedElement.textContent);
-                            pitAffectedElement.textContent = parseInt(temp + 1);
-                        }
+                .then(response => response.json())
+                .then(insertResult => {
+                    console.log(insertQuery);
+                    console.log('Response from server:', insertResult);
+                    
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                })
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            })
+        }
+    };    
 
-                        for (const pit of document.querySelectorAll('.pit')) {
-                            var pitId = pit.getAttribute('data-pit');
-                            winCheckPits[pitId] = pit.textContent;
-                        }
-                        console.log(winCheckPits);
-                        var gameEnd = gameWin(winCheckPits);
-                        if (gameEnd == true) {
-                            console.log('The game is over :)');
-                            var player1 = winCheckPits[7];
-                            var player2 = winCheckPits[14];
-                            var dbString = player1 + " : " + player2;
-                            var res = "Player 1 score: " + player1 + " Player 2 score: " + player2;
-                            if (player1 > player2) {
-                                console.log("Player 1 win");
-                                var winner = "numWins1";
-                                var loser = 'numWins2';
-                            } else if (player2 > player1) {
-                                console.log("Player 2 win");
-                                var winner = 'numWins2';
-                                var loser = 'numWins1';
-                            } else {
-                                console.log("How did you manage this");
-                                var winner = 'numWins1';
-                                var loser = 'numWins2';
-                            }
-                            var incrementQuery = {query: `SELECT MAX(${winner}) AS maxWins, MAX(${loser}) AS maxLoserWins FROM scores`};
-                            console.log(res);
-                            fetch('/dbconnect', {
-                                method: 'POST',
-                                body: JSON.stringify({
-                                    incrementQuery: incrementQuery
-                                }),
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                }
-                            })
-                            .then(response => response.json())
-                            .then(findResult => {
-                                // Handle the response from the server
-                                console.log('Response from server:', findResult);
-                                if (data && findResult.result !== undefined) {
-                                    incWins = parseInt(findResult.result[0][0]) + 1;
-                                    sameVal = parseInt(findResult.result[0][1]);
-                                }
-                                var insertQuery = {query: `INSERT INTO scores (score, ${winner}, ${loser}) VALUES (%s, %s, %s)`, values: [dbString, incWins, sameVal]};
-                                fetch('/dbconnect', {
-                                    method: 'POST',
-                                    body: JSON.stringify({
-                                        insertQuery: insertQuery
-                                    }), 
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    }
-                                })
-                                .then(response => response.json())
-                                .then(insertResult => {
-                                    // Handle the response from the server
-                                    console.log(insertQuery);
-                                    console.log('Response from server:', insertResult);
-                                    
-                                })
-                                .catch(error => {
-                                    console.error('Error:', error);
-                                })
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                            })
-                        }
-                    });
-            });
-        };
+    // function to handle a click event on a pit
+    const pitClickHandler = (event) => {
+        const pitElement = event.target;
+        // get the index of the pit clicked, adjusting for zero-indexed array
+        const pitIndex = parseInt(pitElement.getAttribute('data-pit')) - 1;
+
+        // check if it's the correct player's turn and the correct pit was selected
+        if (!checkTurn(pitIndex)) {
+            alert("It's not your turn... or you selected the wrong pit!");
+            return;
+        }
+
+        // if valid, make the move
+        makeMove(pitIndex);
+    };
+
+    // attach the click event handler to each pit on the board
+    document.querySelectorAll('.pit').forEach(pit => {
+        pit.addEventListener('click', pitClickHandler);
     });
+
+    playerTurnElement.textContent = `Player ${currentPlayer}'s turn!`;
 });
