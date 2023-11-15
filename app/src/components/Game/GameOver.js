@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link, useLocation  } from 'react-router-dom';
-const mysql = require('mysql');
 
 // !! TODO !!: REFORMAT PAGE TO BETTER ILLUSTRATE WINNER
 const GameOver = () => {
