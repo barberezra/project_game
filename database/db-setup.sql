@@ -2,7 +2,9 @@ CREATE DATABASE IF NOT EXISTS stuff;
 USE stuff;
 CREATE TABLE IF NOT EXISTS scores (
     gameID INT NOT NULL AUTO_INCREMENT,
-    score VARCHAR(30) NOT NULL,
+    player1Name VARCHAR(30) NOT NULL DEFAULT 'Player One',
+    player2Name VARCHAR(30) NOT NULL DEFAULT "Player Two",
+    score VARCHAR(30),
     numWins1 INT,
     numWins2 INT,
     tie INT,
