@@ -11,5 +11,14 @@ COPY package-lock.json ./
 RUN npm install
 RUN npm install react-scripts@5.0.1
 
-# start app
-CMD ["npm", "start"]
+WORKDIR /code/backend
+COPY ./backend .
+ENV PATH /code/backend/node_modules/.bin:$PATH
+COPY /backend/package.json ./
+COPY /backend/package-lock.json ./
+RUN npm install
+
+WORKDIR /code
+EXPOSE 7555
+
+CMD ["ash", "run_processes.sh"]
