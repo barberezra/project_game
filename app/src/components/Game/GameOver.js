@@ -45,36 +45,36 @@ const GameOver = () => {
             console.log('Connected to MySQL');
         });
 
-            var incrementQuery = {query: `SELECT MAX(${winner}) AS maxWins, MAX(${loser}) AS maxLoserWins FROM scores`};
-            const [rows, fields] = connection.execute(incrementQuery);
-    
-            if (rows && rows.length > 0) {
-            incWins = parseInt(rows[0].maxWins) + 1;
-            sameVal = parseInt(rows[0].maxLoserWins);
-            }
-            let insertQuery;
-            if (!tie) {
-                insertQuery = `INSERT INTO scores (score, %s, %s) VALUES (%s, %s, %s)`;
-                const [insertRows, insertFields] = connection.execute(insertQuery, [
-                    winner,
-                    loser,
-                    dbString,
-                    incWins,
-                    sameVal
-                ]);
-                console.log('Query executed successfully:', insertRows);
-            } 
-            else {
-                insertQuery = 'INSERT INTO scores (score, tie) VALUES (%s, 1)';
-                const [insertRows, insertFields] = connection.execute(insertQuery, [
-                    dbString
-                ]);
-                console.log('Query executed successfully:', insertRows);
-            }
+        var incrementQuery = {query: `SELECT MAX(${winner}) AS maxWins, MAX(${loser}) AS maxLoserWins FROM scores`};
+        const [rows, fields] = connection.execute(incrementQuery);
+
+        if (rows && rows.length > 0) {
+        incWins = parseInt(rows[0].maxWins) + 1;
+        sameVal = parseInt(rows[0].maxLoserWins);
+        }
+        let insertQuery;
+        if (!tie) {
+            insertQuery = `INSERT INTO scores (score, %s, %s) VALUES (%s, %s, %s)`;
+            const [insertRows, insertFields] = connection.execute(insertQuery, [
+                winner,
+                loser,
+                dbString,
+                incWins,
+                sameVal
+            ]);
+            console.log('Query executed successfully:', insertRows);
         } 
-         catch (err) {
-          console.error('Error executing SQL queries:', err);
-        } 
+        else {
+            insertQuery = 'INSERT INTO scores (score, tie) VALUES (%s, 1)';
+            const [insertRows, insertFields] = connection.execute(insertQuery, [
+                dbString
+            ]);
+            console.log('Query executed successfully:', insertRows);
+        }
+    } 
+        catch (err) {
+        console.error('Error executing SQL queries:', err);
+    } 
 
     connection.end((err) => {
     if (err) {
