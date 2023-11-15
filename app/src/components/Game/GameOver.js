@@ -8,17 +8,20 @@ const GameOver = () => {
     const playerOne = location.state.player1Score;
     const playerTwo = location.state.player2Score;
     
+    var tie;
     if (playerOne > playerTwo) {
         console.log("Player 1 wins");
         winner = "Player 1";
         loser = 'Player 2';
+        tie = false;
     } else if (playerTwo > playerOne) {
         console.log("Player 2 wins");
         winner = 'Player 2';
         loser = 'Player 1';
+        tie = false;
     } else {
         console.log("It's a tie");
-        var tie = true; // Handle a tie situation appropriately
+        tie = true; // Handle a tie situation appropriately
     }
 
     const connection = mysql.createConnection({
@@ -54,7 +57,12 @@ const GameOver = () => {
               incWins = parseInt(findResult.result[0][0]) + 1;
               sameVal = parseInt(findResult.result[0][1]);
           }
-          var insertQuery = {query: `INSERT INTO scores (score, ${winner}, ${loser}) VALUES (%s, %s, %s)`, values: [dbString, incWins, sameVal]};
+          if (tie = false) {
+            var insertQuery = {query: `INSERT INTO scores (score, ${winner}, ${loser}) VALUES (%s, %s, %s)`, values: [dbString, incWins, sameVal]};
+            }
+          else {
+            var insertQuery = {query: `INSERT INTO scores (score, tie) VALUES (%s)`, values: [dbString, 1]};
+          }
           fetch('/dbconnect', {
               method: 'POST',
               body: JSON.stringify({
