@@ -7,17 +7,22 @@ const GameOver = () => {
     let location = useLocation();
     const playerOne = location.state.player1Score;
     const playerTwo = location.state.player2Score;
-    
-    var tie;
+    const dbString = playerOne + ' : ' + playerTwo;
+    let tie;
+    let winner;
+    let loser;
+    let incWins;
+    let sameVal;
+
     if (playerOne > playerTwo) {
         console.log("Player 1 wins");
-        winner = "Player 1";
-        loser = 'Player 2';
+        winner = "numWins1";
+        loser = 'numWins2';
         tie = false;
     } else if (playerTwo > playerOne) {
         console.log("Player 2 wins");
-        winner = 'Player 2';
-        loser = 'Player 1';
+        winner = 'numWins2';
+        loser = 'numWins1';
         tie = false;
     } else {
         console.log("It's a tie");
@@ -31,60 +36,45 @@ const GameOver = () => {
         database: 'stuff'
     });
 
-    connection.connect((err) => {
-        if (err) {
-          console.error('Error connecting to MySQL:', err);
-          return;
-        }
-        console.log('Connected to MySQL');
-      });
-
-      var incrementQuery = {query: `SELECT MAX(${winner}) AS maxWins, MAX(${loser}) AS maxLoserWins FROM scores`};
-      console.log(res);
-      fetch('/dbconnect', {
-          method: 'POST',
-          body: JSON.stringify({
-              incrementQuery: incrementQuery
-          }),
-          headers: {
-              'Content-Type': 'application/json'
-          }
-      })
-      .then(response => response.json())
-      .then(findResult => {
-          console.log('Response from server:', findResult);
-          if (findResult && findResult.result !== undefined) {
-              incWins = parseInt(findResult.result[0][0]) + 1;
-              sameVal = parseInt(findResult.result[0][1]);
-          }
-          if (tie = false) {
-            var insertQuery = {query: `INSERT INTO scores (score, ${winner}, ${loser}) VALUES (%s, %s, %s)`, values: [dbString, incWins, sameVal]};
+    try {
+        connection.connect((err) => {
+            if (err) {
+            console.error('Error connecting to MySQL:', err);
+            return;
             }
-          else {
-            var insertQuery = {query: `INSERT INTO scores (score, tie) VALUES (%s)`, values: [dbString, 1]};
-          }
-          fetch('/dbconnect', {
-              method: 'POST',
-              body: JSON.stringify({
-                  insertQuery: insertQuery
-              }), 
-              headers: {
-                  'Content-Type': 'application/json'
-              }
-          })
-          .then(response => response.json())
-          .then(insertResult => {
-              console.log(insertQuery);
-              console.log('Response from server:', insertResult);
-              
-          })
-          .catch(error => {
-              console.error('Error:', error);
-          })
-      })
-      .catch(error => {
-          console.error('Error:', error);
-      })
+            console.log('Connected to MySQL');
+        });
+
+            var incrementQuery = {query: `SELECT MAX(${winner}) AS maxWins, MAX(${loser}) AS maxLoserWins FROM scores`};
+            const [rows, fields] = connection.execute(incrementQuery);
+    
+            if (rows && rows.length > 0) {
+            incWins = parseInt(rows[0].maxWins) + 1;
+            sameVal = parseInt(rows[0].maxLoserWins);
+            }
+            let insertQuery;
+            if (!tie) {
+                insertQuery = `INSERT INTO scores (score, %s, %s) VALUES (%s, %s, %s)`;
+                const [insertRows, insertFields] = connection.execute(insertQuery, [
+                    winner,
+                    loser,
+                    dbString,
+                    incWins,
+                    sameVal
+                ]);
+                console.log('Query executed successfully:', insertRows);
+            } 
+            else {
+                insertQuery = 'INSERT INTO scores (score, tie) VALUES (%s, 1)';
+                const [insertRows, insertFields] = connection.execute(insertQuery, [
+                    dbString
+                ]);
+                console.log('Query executed successfully:', insertRows);
+            }
+        } 
+         catch (err) {
+          console.error('Error executing SQL queries:', err);
+        } 
 
     connection.end((err) => {
     if (err) {
