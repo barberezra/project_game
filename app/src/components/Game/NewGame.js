@@ -1,22 +1,28 @@
 // Game board and game logic page
 
 import React, { useState } from 'react';
-import '../styles/newGame.css';
+import '../styles/NewGame.css';
 import { useNavigate } from "react-router-dom";
 
 
-// top row is PLayer 2 with index 13
 // bottom row is Player 1 with index 6
+// top row is PLayer 2 with index 13
 const initialBoard = [
   4, 4, 4, 4, 4, 4, 0,
   4, 4, 4, 4, 4, 4, 0
 ];
 
-// !! TODO !!: Fix Bugs, Move Numbers to middle of Pit for better viewing
+// DEMO BOARD
+// const initialBoard = [
+//   1, 0, 0, 0, 0, 1, 0,
+//   0, 1, 0, 0, 1, 0, 0
+// ];
+
 const NewGame = () => {
   const [board, setBoard] = useState(initialBoard);
   const [currentPlayer, setCurrentPlayer] = useState(0);
   const [emptyRow, setEmptyRow] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
   const navigate = useNavigate();
 
   // checks to see if the game is over
@@ -27,12 +33,19 @@ const NewGame = () => {
     let p2Score = board[13];
     // alerts user of Game Over and redirects to Game Over Page
     if (p1Score + p2Score == 48) {
-        alert("Game Over!");
+        // setShowAlert(true);
+        console.log(showAlert);
         const finalScore = { player1Score: p1Score, player2Score: p2Score };
         navigate("/game_over", { state : finalScore });
     } else {
-      console.log('Player1: ' + board[13] + ' & Player2: ' + board[6]);
+      console.log('Player1: ' + board[6] + ' & Player2: ' + board[13]);
     }
+  }
+
+  // display game over and go to winners page with final score
+  const displayGameOver = () => {
+      setShowAlert(true);
+        console.log(showAlert);
   }
 
   // handles whenever a player clicks on a pit in their own section
@@ -52,6 +65,7 @@ const NewGame = () => {
     updatedBoard[pitIndex] = 0;
 
 
+    // distribute marbles to pits
     while (marbles > 0) {
       pitIndex++;
        // Wrap around to the beginning
@@ -61,30 +75,33 @@ const NewGame = () => {
       if ((currentPlayer === 1 && pitIndex === 6) || (currentPlayer === 0 && pitIndex === 13))
         continue;
 
-      // distribute marbles to pits and decrease count
       updatedBoard[pitIndex]++;
       marbles--;
-
-      // Capture other player's pit marbels if they land on an empty pit
-      // that is across from a non-empty pit
-      // FIX THIS ITS A LIL BUGGY
-      // FIX THIS ITS A LIL BUGGY
-      // FIX THIS ITS A LIL BUGGY
-      // FIX THIS ITS A LIL BUGGY
-      // FIX THIS ITS A LIL BUGGY
-      // FIX THIS ITS A LIL BUGGY
-      if (marbles === 0 && updatedBoard[pitIndex] === 1) {
-        if ((currentPlayer === 0 && pitIndex < 6) || (currentPlayer === 1 && pitIndex > 6 && pitIndex < 13)) {
-          const oppositePitIndex = 12 - pitIndex;
-          updatedBoard[pitIndex] = 0;
-          updatedBoard[6] += updatedBoard[oppositePitIndex] + 1;
-          updatedBoard[oppositePitIndex] = 0;
-        }
-      }
     }
 
-    // Switch players
-    setCurrentPlayer(currentPlayer === 0 ? 1 : 0);
+    // SPECIAL MOVE: Lands on Mancala Logic
+    // gives current player another turn if they land in their own mancala
+    if (pitIndex !== 6 && pitIndex !== 13) {
+      // SPECIAL MOVE: Capture other player's pit logic
+      // ONLY if player lands on an empty pit that is across from a non-empty pit
+      if (updatedBoard[pitIndex] === 1) {
+        const oppositePitIndex = 12 - pitIndex;
+        if (updatedBoard[oppositePitIndex] > 0) {
+          const capturedPit = updatedBoard[oppositePitIndex] + 1;
+          // set current and opposite pits to zero
+          updatedBoard[oppositePitIndex] = 0;
+          updatedBoard[pitIndex] = 0;
+          // give captured pits to the current player
+          if (currentPlayer === 0) {
+            updatedBoard[6] += capturedPit;
+          } else {
+            updatedBoard[13] += capturedPit;
+          }
+        }
+      }
+      // Switch players
+      setCurrentPlayer(currentPlayer === 0 ? 1 : 0);
+    }
 
     //update the board
     setBoard(updatedBoard);
@@ -92,8 +109,7 @@ const NewGame = () => {
     // check if the Game is Over
     isGameOver(updatedBoard);
 
-    // check if there are any empty rows
-    // if so, open up all pits
+    // check if there are any empty rows; if so, open up all pits
     isRowEmpty(updatedBoard);
   };
 
@@ -186,12 +202,15 @@ const NewGame = () => {
         board[12] === 0
         );
     if (topRow || botRow) {
-        console.log('EMPTY ROW');
         setEmptyRow(true);
     } else {
         setEmptyRow(false);
     }
   }
+
+  // const returnToHomePage = () => {
+  //   navigate("/");
+  // }
 
   // determines which row to turn on depending on the player
   const getPlayerClass = (index) => {
@@ -203,6 +222,14 @@ const NewGame = () => {
 
   return (
     <div className="Game">
+      {/* {showAlert && (
+        <div className="modal">
+          <div className="alert">
+            <h1>Game Over</h1>
+            <button onClick={isGameOver}>OK</button>
+          </div>
+        </div>
+      )} */}
       <h1>Mancala Game </h1>
       <div className="turn">
         {currentPlayer === 0 ? 'Player 1' : 'Player 2'}'s Turn:
@@ -216,6 +243,9 @@ const NewGame = () => {
         </div>
         <div className='scores'>{scorePits(1)}</div>
       </div>
+      <span>
+        {/* <button onClick={returnToHomePage}>Return to Home</button> */}
+      </span>
     </div>
   );
 };
