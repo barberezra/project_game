@@ -6,8 +6,7 @@ COPY . .
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /code/node_modules/.bin:$PATH
 # install app dependencies
-COPY package.json ./
-COPY package-lock.json ./
+COPY /app/package.json ./
 
 RUN npm install
 RUN npm install react-scripts@5.0.1
