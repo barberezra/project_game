@@ -17,7 +17,7 @@ CMD ["npm", "start"]
 
 FROM node:current-alpine as backend
 WORKDIR /code/backend
-COPY package*.json ./
+COPY /backend/package*.json ./
 RUN npm install
 COPY . .
 EXPOSE 3000
