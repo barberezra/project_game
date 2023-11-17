@@ -3,7 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/GameOver.css';
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
+
+var winner;
+var loser;
+var tie;
 
 const GameOver = () => {
     // grab the scores and player names
@@ -15,12 +19,15 @@ const GameOver = () => {
 
     // Determine the winner on page load
     useEffect(() => {
-        if (playerOneScore > playerTwoScore) {
-            setGameResults(1);
-        } else if (playerOneScore < playerTwoScore) {
-            setGameResults(2);
-        }
-      });
+        try {
+            if (playerOneScore > playerTwoScore) {
+                setGameResults(1);
+            } else if (playerOneScore < playerTwoScore) {
+                setGameResults(2);
+            }
+        } catch (error) {
+            console.error('Error in useEffect:', error);
+        }})
 
     // give user option to return to Home
     const returnToHomePage = () => {
@@ -58,7 +65,7 @@ const GameOver = () => {
         dbString: playerOneScore + " : " + playerTwoScore,
         tie: tie
       };
-    fetch("http://backend:3000/dbconnect", {
+    fetch("http://localhost:3000/dbconnect", {
         method: 'POST',
         headers: {
         'Content-Type': 'application/json'

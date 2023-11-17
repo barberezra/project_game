@@ -28,6 +28,7 @@ services:
     #     expose:
     #       - "5000"
     db:
+      container_name: db
       image: mysql
       expose:
         - "3306"
