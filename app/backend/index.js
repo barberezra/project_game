@@ -24,19 +24,19 @@ ws.on('connection', (ws) => {
     });
 });
 
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'thebestgame',
-    database: 'stuff'
-});
-const query = util.promisify(connection.query).bind(connection);
 
 // Endpoint for handling database connection and WebSocket interaction
 app.post('/dbconnect', async (req, res) => {
     try {
         const { winner, loser, dbString, tie } = req.body;
-
+        
+        const connection = mysql.createConnection({
+            host: 'localhost',
+            user: 'root',
+            password: 'thebestgame',
+            database: 'stuff'
+        });
+        const query = util.promisify(connection.query).bind(connection);
         // Retrieve maxWins and maxLoserWins
         const incrementQuery = `SELECT MAX(${winner}) AS maxWins, MAX(${loser}) AS maxLoserWins FROM scores`;
         const [rows] = await query(incrementQuery);
