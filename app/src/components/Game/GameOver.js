@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/GameOver.css';
 
-
 const GameOver = () => {
     // grab the scores and player names
     let location = useLocation();
@@ -21,9 +20,9 @@ const GameOver = () => {
             } else if (playerOneScore < playerTwoScore) {
                 setGameResults(2);
             }
-            var winner;
-            var loser;
-            var tie;
+            let winner;
+            let loser;
+            let tie;
             if (playerOneScore > playerTwoScore) {
                 console.log("Player 1 wins");
                 winner = "numWins1";
@@ -38,45 +37,31 @@ const GameOver = () => {
                 console.log("It's a tie");
                 tie = true; // Handle a tie situation appropriately
             }
-            var dbString = playerOneScore + " : " + playerTwoScore;
-        
-            const socket = new WebSocket('ws://localhost:3003/dbconnect');
-        
-        // Connection opened
-            socket.addEventListener('open', (event) => {
-                // Send data to the server
-                const data = {
-                    winner: winner,
-                    loser: loser,
-                    dbString: dbString,
-                    tie: tie
-                };
-        
-                // Convert the data to a JSON string
-                const jsonData = JSON.stringify(data);
-        
-                // Send the JSON string to the server
-                socket.send(jsonData);
+            let dbString = playerOneScore + " : " + playerTwoScore;
+
+            fetch('/dbconnect', {
+                method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                winner,
+                loser,
+                dbString,
+                tie,
+            }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
             });
-        
-            socket.addEventListener('message', (event) => {
-                const dataFromServer = JSON.parse(event.data);
-                console.log('Message from server:', dataFromServer);
-            });
-        
-            socket.addEventListener('error', (event) => {
-                console.error('WebSocket encountered an error:', event);
-            });
-            
-            // Connection closed
-            socket.addEventListener('close', (event) => {
-                console.log('Server connection closed');
-                socket.close();
-            });
-        } catch (error) {
-            console.error('Error in useEffect:', error);
+    } catch (error) {
+        console.error('Error in useEffect:', error);
         }
-    })
+    }, [])
 
     // give user option to return to Home
     const returnToHomePage = () => {
