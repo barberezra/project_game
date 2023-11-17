@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json()); // Middleware to parse JSON requests
 
 // Define the connection object outside the endpoint handler
-const connection = mysql.createConnection({
+const connection = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: 'thebestgame',
@@ -55,7 +55,7 @@ app.post('/dbconnect', async (req, res) => {
         });
     } catch (err) {
         console.error('Error executing SQL queries:', err);
-        res.status(500).json({ success: false, error: 'Internal Server Error' });
+        res.status(500).json({ success: false, error: err});
     } finally {
         // Close the connection in the finally block
         connection.end();
