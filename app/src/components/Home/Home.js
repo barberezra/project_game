@@ -14,6 +14,10 @@ const Home = () => (
         <Link to="/how_to">
             <button className="home">How To Play</button>
         </Link>
+        <br />
+        <Link to="/rankings">
+            <button className="home">Rankings</button>
+        </Link>
     </div>
   );
   

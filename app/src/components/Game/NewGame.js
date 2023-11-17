@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import '../styles/NewGame.css';
 import { useNavigate } from "react-router-dom";
 
-
 // bottom row is Player 1 with index 6
 // top row is PLayer 2 with index 13
 const initialBoard = [
@@ -14,15 +13,15 @@ const initialBoard = [
 
 // DEMO BOARD
 // const initialBoard = [
-//   1, 0, 0, 0, 0, 1, 0,
-//   0, 1, 0, 0, 1, 0, 0
+//   0, 1, 0, 0, 2, 0, 0,
+//   0, 0, 3, 0, 2, 1, 0
 // ];
 
 const NewGame = () => {
   const [board, setBoard] = useState(initialBoard);
   const [currentPlayer, setCurrentPlayer] = useState(0);
   const [emptyRow, setEmptyRow] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
+  const [showSpecialMove, setSpecialMove] = useState(0);
   const navigate = useNavigate();
 
   // checks to see if the game is over
@@ -32,20 +31,12 @@ const NewGame = () => {
     let p1Score = board[6];
     let p2Score = board[13];
     // alerts user of Game Over and redirects to Game Over Page
-    if (p1Score + p2Score == 48) {
-        // setShowAlert(true);
-        console.log(showAlert);
+    if (p1Score + p2Score === 48) {
         const finalScore = { player1Score: p1Score, player2Score: p2Score };
         navigate("/game_over", { state : finalScore });
     } else {
       console.log('Player1: ' + board[6] + ' & Player2: ' + board[13]);
     }
-  }
-
-  // display game over and go to winners page with final score
-  const displayGameOver = () => {
-      setShowAlert(true);
-        console.log(showAlert);
   }
 
   // handles whenever a player clicks on a pit in their own section
@@ -64,7 +55,6 @@ const NewGame = () => {
     let marbles = updatedBoard[pitIndex];
     updatedBoard[pitIndex] = 0;
 
-
     // distribute marbles to pits
     while (marbles > 0) {
       pitIndex++;
@@ -82,25 +72,40 @@ const NewGame = () => {
     // SPECIAL MOVE: Lands on Mancala Logic
     // gives current player another turn if they land in their own mancala
     if (pitIndex !== 6 && pitIndex !== 13) {
+
       // SPECIAL MOVE: Capture other player's pit logic
       // ONLY if player lands on an empty pit that is across from a non-empty pit
       if (updatedBoard[pitIndex] === 1) {
         const oppositePitIndex = 12 - pitIndex;
         if (updatedBoard[oppositePitIndex] > 0) {
           const capturedPit = updatedBoard[oppositePitIndex] + 1;
+
           // set current and opposite pits to zero
           updatedBoard[oppositePitIndex] = 0;
           updatedBoard[pitIndex] = 0;
+
           // give captured pits to the current player
           if (currentPlayer === 0) {
             updatedBoard[6] += capturedPit;
           } else {
             updatedBoard[13] += capturedPit;
           }
+
+          // notify user of captured pit move
+          setSpecialMove(1);
+        } else {
+          // reset and remove notification
+          setSpecialMove(0);
         }
+      } else {
+        // reset and remove notification
+        setSpecialMove(0);
       }
       // Switch players
       setCurrentPlayer(currentPlayer === 0 ? 1 : 0);
+    } else {
+      // notify user of extra move for landing in mancala
+      setSpecialMove(2);
     }
 
     //update the board
@@ -131,7 +136,7 @@ const NewGame = () => {
                 emptyRow === false
               }
             >
-              {marbles}
+              <p>{marbles}</p>
             </button>
         )
       }
@@ -153,7 +158,7 @@ const NewGame = () => {
                 emptyRow === false
               }
             >
-              {marbles}
+              <p>{marbles}</p>
             </button>
         )
       }
@@ -168,7 +173,7 @@ const NewGame = () => {
             key={13}
             className={`score`}
             disabled={true}>
-            {board[13]}
+            <p>{board[13]}</p>
           </button>
         )
       } else {
@@ -177,7 +182,7 @@ const NewGame = () => {
             key={6}
             className={`score`}
             disabled={true}>
-            {board[6]}
+            <p>{board[6]}</p>
           </button>
         )
       }
@@ -208,33 +213,37 @@ const NewGame = () => {
     }
   }
 
-  // const returnToHomePage = () => {
-  //   navigate("/");
-  // }
+  // give user option to return to Home
+  const returnToHomePage = () => {
+    navigate("/");
+  }
 
-  // determines which row to turn on depending on the player
+  // determines which row highlight to turn on/off depending on the player
   const getPlayerClass = (index) => {
-    if (((currentPlayer === 0 && index === 13) || (currentPlayer === 1 && index === 6))) {
+    if (((currentPlayer === 0 && index > 6) || (currentPlayer === 1 && index < 6)) && emptyRow === false) {
       return 'not-clickable';
     }
     return '';
   };
 
+  // notifies player if they completed a special move
+  const displaySpecialMove = (move) => {
+      if (move === 1) {
+        return 'You landed on an empty pit and captured the opposing pit marbles!';
+      } else if (move === 2) {
+        return 'You landed in your mancala and get another turn!';
+      } else {
+        return ' ';
+      }
+  }
+
   return (
-    <div className="Game">
-      {/* {showAlert && (
-        <div className="modal">
-          <div className="alert">
-            <h1>Game Over</h1>
-            <button onClick={isGameOver}>OK</button>
-          </div>
-        </div>
-      )} */}
-      <h1>Mancala Game </h1>
-      <div className="turn">
+    <div className='Game'>
+      <h1>Mancala</h1>
+      <div className='turn'>
         {currentPlayer === 0 ? 'Player 1' : 'Player 2'}'s Turn:
       </div>
-      
+      <p className='noti-box'> { displaySpecialMove(showSpecialMove) } </p>
       <div className='board'>
         <div className='scores'>{scorePits(0)}</div>
         <div className='pits-box'>
@@ -244,7 +253,7 @@ const NewGame = () => {
         <div className='scores'>{scorePits(1)}</div>
       </div>
       <span>
-        {/* <button onClick={returnToHomePage}>Return to Home</button> */}
+        <button onClick={returnToHomePage}>Return to Home</button>
       </span>
     </div>
   );
