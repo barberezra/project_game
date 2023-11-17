@@ -26,7 +26,6 @@ app.post('/dbconnect', async (req, res) => {
         // Retrieve maxWins and maxLoserWins
         const incrementQuery = `SELECT MAX(${winner}) AS maxWins, MAX(${loser}) AS maxLoserWins FROM scores`;
         const [rows] = await query(incrementQuery);
-
         let incWins;
         let sameVal;
 
@@ -46,9 +45,14 @@ app.post('/dbconnect', async (req, res) => {
             insertQuery = 'INSERT INTO scores (score, tie) VALUES (?, 1)';
             await query(insertQuery, [dbString]);
         }
-
         console.log('Query executed successfully');
-        res.status(200).json({ success: true });
+        res.status(200).json({
+            success: true,
+            query: {
+                type: tie ? 'tie' : 'normal',
+                executed: insertQuery,
+            },
+        });
     } catch (err) {
         console.error('Error executing SQL queries:', err);
         res.status(500).json({ success: false, error: 'Internal Server Error' });
