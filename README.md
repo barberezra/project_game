@@ -24,8 +24,8 @@ We recreated the Mancala game for CS347 using Docker. The game follows the origi
 ```
 
 ## Stack
-Front-End: React.js
-Back-end: Node.js, Express
-Database: MySQL
+Front-End: React.js  
+Back-end: Node.js, Express  
+Database: MySQL  
 
 ## How To Run
