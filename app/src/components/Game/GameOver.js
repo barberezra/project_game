@@ -1,19 +1,60 @@
-import React from 'react';
-import { Link, useLocation  } from 'react-router-dom';
+// Game over page that displays final scores and the winner
 
-// !! TODO !!: REFORMAT PAGE TO BETTER ILLUSTRATE WINNER
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import '../styles/GameOver.css';
+
 const GameOver = () => {
+    // grab the scores and player names
     let location = useLocation();
-    const playerOne = location.state.player1Score;
-    const playerTwo = location.state.player2Score;
+    const playerOneScore = location.state.player1Score;
+    const playerTwoScore = location.state.player2Score;
+    const [showGameResults, setGameResults] = useState(0);
+    const navigate = useNavigate();
+
+    // Determine the winner on page load
+    useEffect(() => {
+        if (playerOneScore > playerTwoScore) {
+            setGameResults(1);
+        } else if (playerOneScore < playerTwoScore) {
+            setGameResults(2);
+        }
+      });
+
+    // give user option to return to Home
+    const returnToHomePage = () => {
+        navigate("/");
+    }
+
+    // displays winner and loser or tie
+    const displayGameResults = (move) => {
+        if (move === 1) {
+            return {player1: '🎊 WINNER 🎊', player2: '💔 LOSER 💔'};
+        } else if (move === 2) {
+            return {player1: '💔 LOSER 💔', player2: '🎊 WINNER 🎊'};
+        } else {
+            return {player1: '👔 TIE 👔', player2: '👔 TIE 👔'};
+        }
+    }
 
     return (
         <div>
-            <h1>Player One Score: { playerOne }</h1>
-            <h1>Player Two Score: { playerTwo }</h1>
-            <Link to="/">
-                <button className="home">Go Home</button>
-            </Link>
+            <h1>GAME OVER</h1>
+            <h2>Thanks for playing!</h2>
+            <div className='score-box'>
+                    <h3> Final Score: { playerOneScore } - { playerTwoScore }</h3>
+                    <div className='display-score'>
+                        <h4> { displayGameResults(showGameResults).player1 } </h4>
+                        <p>PLAYER ONE</p>
+                    </div>
+                    <div className='display-score'>
+                        <h4> { displayGameResults(showGameResults).player2 } </h4>
+                        <p>PLAYER TWO</p>
+                    </div>
+            </div>
+            <span>
+                <button onClick={returnToHomePage}>Go Home</button>
+            </span>
         </div>
     );
 }

@@ -1,11 +1,11 @@
 /* styling for the Home and HowTo Page */
 
 .content {
-    margin: 8% 10%;
+    margin: 5% 10% 7% 10%;
 }
 
 .home {
     margin: 3%;
-    width: 150px;
-    height: 100px;
+    width: 200px;
+    height: 75px;
 }

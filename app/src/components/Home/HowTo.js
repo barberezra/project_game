@@ -1,15 +1,26 @@
 // Instructions page on how to play Mancala
 
 import React from "react";
-import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
-const HowTo = () => (
-    <div>
-        <h1>Instructions:</h1>
-        <Link to="/">
-            <button>Go Home</button>
-        </Link>
-    </div>
-);
+const HowTo = () => {
+    const navigate = useNavigate();
+
+    // give user option to return to Home
+    const returnToHomePage = () => {
+        navigate("/");
+    }
+    return(
+        <div>
+            <h1>Instructions:</h1>
+            <div>
+                
+            </div>
+            <span>
+                <button onClick={returnToHomePage}>Go Back</button>
+            </span>
+        </div>
+    );
+};
 
 export default HowTo;

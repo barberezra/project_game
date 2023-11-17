@@ -4,8 +4,25 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #E9E5D6;
   color: #362706;
-  text-align:center;
+  text-align: center;
   justify-content: center;
   align-items: center;
-  font-family: 'Rubik', sans-serif;
+  overflow: hidden;
+}
+
+/* Go Home Buttons */
+span button{
+  display: block;
+  height: 44px;
+  width: 222px;
+  background-color: #cd6a31;
+  color: #362706;
+  border: #362706 3px solid;
+  border-radius: 4px;
+}
+
+span button:hover {
+  background-color: rgb(241, 234, 234);
+  border: #cd6a31 3px solid;
+  color: #cd6a31;
 }

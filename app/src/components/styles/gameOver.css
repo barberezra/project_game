@@ -1,0 +1,41 @@
+/* styling for Game Over Page */
+
+h1 {
+    font-size: 99.9px;
+    margin-top: 1%;
+}
+
+h2 {
+    font-size: 22.2px;
+    font-style: italic;
+    margin-top: 0px;
+    margin-bottom: 2%;
+    letter-spacing: 2px;
+}
+
+h3 {
+    font-size: 44.4px;
+    border: #362706 4px solid;
+    width: fit-content;
+    margin: auto;
+    padding: 24px;
+}
+
+.score-box {
+    margin: 4% auto;
+}
+
+.display-score {
+    display: inline-block;
+    margin: -1% 6%;
+}
+
+.display-score h4 {
+    font-size: 33.3px;
+    margin: 33.3% auto 15% auto;
+}
+
+.display-score p {
+    font-size: 26px;
+    margin: auto;
+}
