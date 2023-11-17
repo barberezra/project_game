@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/GameOver.css';
+const fetch = require('node-fetch');
 
 const GameOver = () => {
     // grab the scores and player names
@@ -37,12 +38,12 @@ const GameOver = () => {
         }
     }
 
-    if (playerOne > playerTwo) {
+    if (playerOneScore > playerTwoScore) {
         console.log("Player 1 wins");
         winner = "numWins1";
         loser = 'numWins2';
         tie = false;
-    } else if (playerTwo > playerOne) {
+    } else if (playerTwoScore > playerOneScore) {
         console.log("Player 2 wins");
         winner = 'numWins2';
         loser = 'numWins1';
@@ -51,8 +52,32 @@ const GameOver = () => {
         console.log("It's a tie");
         tie = true; // Handle a tie situation appropriately
     }
+    const requestBody = {
+        winner: winner,
+        loser: loser,
+        dbString: playerOneScore + " : " + playerTwoScore,
+        tie: tie
+      };
+    fetch("http://backend:3000/dbconnect", {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+        })
+    .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Response from server:', data);
+      })
+      .catch(error => {
+        console.error('Error:', error.message);
+      });
 
-    
     return (
         <div>
             <h1>GAME OVER</h1>

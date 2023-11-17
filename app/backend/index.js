@@ -3,8 +3,13 @@ const mysql = require('mysql');
 const app = express();
 const port = 3000;
 
-app.get('/dbconnect', (req, res) => {
-    //  Replace with db code
+app.post('/dbconnect', (req, res) => {
+    const winner = req.body.winner;
+    const loser = req.body.loser;
+    const dbString = req.body.dbString;
+    const tie = req.body.tie;
+
+    // Your database connection setup
     const connection = mysql.createConnection({
         host: 'localhost',
         user: 'root',
@@ -13,13 +18,7 @@ app.get('/dbconnect', (req, res) => {
     });
 
     try {
-        connection.connect((err) => {
-            if (err) {
-            console.error('Error connecting to MySQL:', err);
-            return;
-            }
-            console.log('Connected to MySQL');
-        });
+        connection.connect();
 
         var incrementQuery = {query: `SELECT MAX(${winner}) AS maxWins, MAX(${loser}) AS maxLoserWins FROM scores`};
         const [rows, fields] = connection.execute(incrementQuery);
@@ -51,7 +50,7 @@ app.get('/dbconnect', (req, res) => {
         catch (err) {
         console.error('Error executing SQL queries:', err);
     } 
-
+    
     connection.end((err) => {
     if (err) {
         console.error('Error closing MySQL connection:', err);
