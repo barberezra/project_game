@@ -8,9 +8,12 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.1",
+    "http": "^0.0.1-security",
     "mysql": "^2.18.1",
-    "util": "^0.12.5"
+    "util": "^0.12.5",
+    "ws": "^8.14.2"
   },
   "keywords": [],
   "author": "",

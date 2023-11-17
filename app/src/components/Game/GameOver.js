@@ -3,11 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/GameOver.css';
-import fetch from 'node-fetch';
 
-var winner;
-var loser;
-var tie;
 
 const GameOver = () => {
     // grab the scores and player names
@@ -16,7 +12,7 @@ const GameOver = () => {
     const playerTwoScore = location.state.player2Score;
     const [showGameResults, setGameResults] = useState(0);
     const navigate = useNavigate();
-
+    
     // Determine the winner on page load
     useEffect(() => {
         try {
@@ -25,9 +21,62 @@ const GameOver = () => {
             } else if (playerOneScore < playerTwoScore) {
                 setGameResults(2);
             }
+            var winner;
+            var loser;
+            var tie;
+            if (playerOneScore > playerTwoScore) {
+                console.log("Player 1 wins");
+                winner = "numWins1";
+                loser = 'numWins2';
+                tie = false;
+            } else if (playerTwoScore > playerOneScore) {
+                console.log("Player 2 wins");
+                winner = 'numWins2';
+                loser = 'numWins1';
+                tie = false;
+            } else {
+                console.log("It's a tie");
+                tie = true; // Handle a tie situation appropriately
+            }
+            var dbString = playerOneScore + " : " + playerTwoScore;
+        
+            const socket = new WebSocket('ws://localhost:3003/dbconnect');
+        
+        // Connection opened
+            socket.addEventListener('open', (event) => {
+                // Send data to the server
+                const data = {
+                    winner: winner,
+                    loser: loser,
+                    dbString: dbString,
+                    tie: tie
+                };
+        
+                // Convert the data to a JSON string
+                const jsonData = JSON.stringify(data);
+        
+                // Send the JSON string to the server
+                socket.send(jsonData);
+            });
+        
+            socket.addEventListener('message', (event) => {
+                const dataFromServer = JSON.parse(event.data);
+                console.log('Message from server:', dataFromServer);
+            });
+        
+            socket.addEventListener('error', (event) => {
+                console.error('WebSocket encountered an error:', event);
+            });
+            
+            // Connection closed
+            socket.addEventListener('close', (event) => {
+                console.log('Server connection closed');
+                socket.close();
+            });
         } catch (error) {
             console.error('Error in useEffect:', error);
-        }})
+        }
+    })
 
     // give user option to return to Home
     const returnToHomePage = () => {
@@ -45,45 +94,6 @@ const GameOver = () => {
         }
     }
 
-    if (playerOneScore > playerTwoScore) {
-        console.log("Player 1 wins");
-        winner = "numWins1";
-        loser = 'numWins2';
-        tie = false;
-    } else if (playerTwoScore > playerOneScore) {
-        console.log("Player 2 wins");
-        winner = 'numWins2';
-        loser = 'numWins1';
-        tie = false;
-    } else {
-        console.log("It's a tie");
-        tie = true; // Handle a tie situation appropriately
-    }
-    const requestBody = {
-        winner: winner,
-        loser: loser,
-        dbString: playerOneScore + " : " + playerTwoScore,
-        tie: tie
-      };
-    fetch("http://localhost:3000/dbconnect", {
-        method: 'POST',
-        headers: {
-        'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestBody)
-        })
-    .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Response from server:', data);
-      })
-      .catch(error => {
-        console.error('Error:', error.message);
-      });
 
     return (
         <div>

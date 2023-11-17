@@ -1,13 +1,29 @@
 const express = require('express');
 const mysql = require('mysql');
 const util = require('util'); // To convert callback-based APIs to promise-based
+const cors = require('cors');
+const http = require('http');
+const WebSocket = require('ws');
 
 const app = express();
-const port = 3000;
+const server = http.createServer(app);
+const ws = new WebSocket.Server({ server });
 
 app.use(express.json()); // Middleware to parse JSON requests
+app.use(cors());
 
-// Promisify the connection.query method
+ws.on('connection', (ws) => {
+    // handle WebSocket connections
+    ws.on('message', (message) => {
+        console.log(`Received message: ${message}`);
+    });
+
+    // Handle closing of the WebSocket connection
+    ws.on('close', () => {
+        console.log('Client disconnected from WebSocket');
+    });
+});
+
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -16,6 +32,7 @@ const connection = mysql.createConnection({
 });
 const query = util.promisify(connection.query).bind(connection);
 
+// Endpoint for handling database connection and WebSocket interaction
 app.post('/dbconnect', async (req, res) => {
     try {
         const { winner, loser, dbString, tie } = req.body;
@@ -36,11 +53,11 @@ app.post('/dbconnect', async (req, res) => {
 
         if (!tie) {
             // Parameterized query to prevent SQL injection
-            insertQuery = `INSERT INTO scores (score, %s, %s) VALUES (%s, %s, %s)`;
-            await query(insertQuery, [winner, loser, dbString, incWins, sameVal]);
+            insertQuery = `INSERT INTO scores (score, ${winner}, ${loser}) VALUES (?, ?, ?)`;
+            await query(insertQuery, [dbString, incWins, sameVal]);
         } else {
             // Parameterized query for tie
-            insertQuery = 'INSERT INTO scores (score, tie) VALUES (%s, 1)';
+            insertQuery = 'INSERT INTO scores (score, tie) VALUES (?, 1)';
             await query(insertQuery, [dbString]);
         }
 
@@ -54,6 +71,6 @@ app.post('/dbconnect', async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
+server.listen(3003, () => {
+    console.log('Server is running on port 3003');
 });
