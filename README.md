@@ -13,6 +13,7 @@ We recreated the Mancala game for CS347 using Docker. The game follows the origi
 
 ## File Structure
 
+```bash
 ├── app                  # runs web app
 │   ├── backend          # server connecting to database
 │   ├── public
@@ -20,6 +21,7 @@ We recreated the Mancala game for CS347 using Docker. The game follows the origi
 │   └── ...
 ├── database             # stores game stats
 └── docker-compose.yaml  # builds docker containers
+```
 
 ## Stack
 Front-End: React.js
