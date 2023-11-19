@@ -22,101 +22,92 @@ const NewGame = () => {
   const [currentPlayer, setCurrentPlayer] = useState(0);
   const [emptyRow, setEmptyRow] = useState(false);
   const [showSpecialMove, setSpecialMove] = useState(0);
+  const [player1Name, setPlayer1Name] = useState('');
+  const [player2Name, setPlayer2Name] = useState('');
+  const [namesEntered, setNamesEntered] = useState(false);
   const navigate = useNavigate();
 
   // checks to see if the game is over
   // updated board will not show the final score because the state
   // doesn't update until after the next (a React thing)
-  const isGameOver = (board) => {
-    let p1Score = board[6];
-    let p2Score = board[13];
-    // alerts user of Game Over and redirects to Game Over Page
-    if (p1Score + p2Score === 48) {
-        const finalScore = { player1Score: p1Score, player2Score: p2Score };
-        navigate("/game_over", { state : finalScore });
-    } else {
-      console.log('Player1: ' + board[6] + ' & Player2: ' + board[13]);
+// checks to see if the game is over by checking if one side's pits are all empty
+  const isGameOver = (updatedBoard) => {
+    // Check if all pits are empty on one side
+    const topRowEmpty = updatedBoard.slice(0, 6).every(pit => pit === 0);
+    const bottomRowEmpty = updatedBoard.slice(7, 13).every(pit => pit === 0);
+
+    if (topRowEmpty || bottomRowEmpty) {
+      // Calculate the final score by summing all stones
+      const p1Score = updatedBoard.slice(0, 7).reduce((a, b) => a + b, 0);
+      const p2Score = updatedBoard.slice(7).reduce((a, b) => a + b, 0);
+      const finalScore = { player1Score: p1Score, player2Score: p2Score };
+      navigate("/game_over", {
+        state: {
+          player1Score: p1Score,
+          player2Score: p2Score,
+          player1Name: player1Name,
+          player2Name: player2Name
+        }
+      });
     }
   }
 
-  // handles whenever a player clicks on a pit in their own section
+  // // handles whenever a player clicks on a pit in their own section
   const handlePitClick = (pitIndex) => {
-    // Invalid move if pit is empty
-    if (board[pitIndex] === 0)
+    // Invalid move if pit is empty or if it's not the player's own pit
+    if (board[pitIndex] === 0 || 
+        (currentPlayer === 0 && pitIndex > 5) || 
+        (currentPlayer === 1 && pitIndex < 7)) {
       return;
-
-    // Invalid move if trying to choose opponent's pit
-    // turns this off if there is an empty row to allow players to click on open pits
-    if (((currentPlayer === 0 && pitIndex >= 6) || (currentPlayer === 1 && pitIndex < 7)) && emptyRow === false)
-      return;
-
-    // updates board setting current pit to zero and storing marbles value from that pit
+    }
+  
     let updatedBoard = [...board];
     let marbles = updatedBoard[pitIndex];
     updatedBoard[pitIndex] = 0;
-
-    // distribute marbles to pits
+    let lastPitIndex = pitIndex;
+    
+    // Distribute marbles
     while (marbles > 0) {
-      pitIndex++;
-       // Wrap around to the beginning
-      if (pitIndex === 14) pitIndex = 0;
-
+      lastPitIndex = (lastPitIndex + 1) % 14;
+  
       // Skip opponent's store
-      if ((currentPlayer === 1 && pitIndex === 6) || (currentPlayer === 0 && pitIndex === 13))
+      if ((currentPlayer === 0 && lastPitIndex === 13) || 
+          (currentPlayer === 1 && lastPitIndex === 6)) {
         continue;
-
-      updatedBoard[pitIndex]++;
+      }
+  
+      updatedBoard[lastPitIndex]++;
       marbles--;
     }
-
-    // SPECIAL MOVE: Lands on Mancala Logic
-    // gives current player another turn if they land in their own mancala
-    if (pitIndex !== 6 && pitIndex !== 13) {
-
-      // SPECIAL MOVE: Capture other player's pit logic
-      // ONLY if player lands on an empty pit that is across from a non-empty pit
-      if (updatedBoard[pitIndex] === 1) {
-        const oppositePitIndex = 12 - pitIndex;
-        if (updatedBoard[oppositePitIndex] > 0) {
-          const capturedPit = updatedBoard[oppositePitIndex] + 1;
-
-          // set current and opposite pits to zero
-          updatedBoard[oppositePitIndex] = 0;
-          updatedBoard[pitIndex] = 0;
-
-          // give captured pits to the current player
-          if (currentPlayer === 0) {
-            updatedBoard[6] += capturedPit;
-          } else {
-            updatedBoard[13] += capturedPit;
-          }
-
-          // notify user of captured pit move
-          setSpecialMove(1);
-        } else {
-          // reset and remove notification
-          setSpecialMove(0);
-        }
-      } else {
-        // reset and remove notification
-        setSpecialMove(0);
-      }
-      // Switch players
-      setCurrentPlayer(currentPlayer === 0 ? 1 : 0);
+  
+    // Capture logic, only if the last marble lands in an empty pit on the current player's side
+    if ((currentPlayer === 0 && lastPitIndex < 6 && updatedBoard[lastPitIndex] === 1 && updatedBoard[12 - lastPitIndex] > 0) ||
+        (currentPlayer === 1 && lastPitIndex > 6 && lastPitIndex < 13 && updatedBoard[lastPitIndex] === 1 && updatedBoard[12 - lastPitIndex] > 0)) {
+      let capturedStones = updatedBoard[12 - lastPitIndex];
+      updatedBoard[lastPitIndex] = 0;
+      updatedBoard[12 - lastPitIndex] = 0;
+      updatedBoard[currentPlayer === 0 ? 6 : 13] += capturedStones + 1;
+      setSpecialMove(1); // Notify user of captured pit move
     } else {
-      // notify user of extra move for landing in mancala
-      setSpecialMove(2);
+      setSpecialMove(0); // Reset special move notification
     }
-
-    //update the board
-    setBoard(updatedBoard);
-
-    // check if the Game is Over
+  
+    // Check if the last marble lands in the player's store for an extra turn
+    if ((currentPlayer === 0 && lastPitIndex === 6) || 
+        (currentPlayer === 1 && lastPitIndex === 13)) {
+      setSpecialMove(2); // Player gets another turn
+    } else {
+      setCurrentPlayer(currentPlayer === 0 ? 1 : 0); // Change turn
+    }
+  
+    setBoard(updatedBoard); // Update the board state
+  
+    // Check if the game is over
     isGameOver(updatedBoard);
-
-    // check if there are any empty rows; if so, open up all pits
+  
+    // Check if there are any empty rows; if so, open up all pits
     isRowEmpty(updatedBoard);
-  };
+  };  
 
 // makes pits for Player 2
   const renderTopPits = () => {
@@ -228,35 +219,78 @@ const NewGame = () => {
 
   // notifies player if they completed a special move
   const displaySpecialMove = (move) => {
-      if (move === 1) {
-        return 'You landed on an empty pit and captured the opposing pit marbles!';
-      } else if (move === 2) {
-        return 'You landed in your mancala and get another turn!';
-      } else {
-        return ' ';
-      }
+    const playerName = currentPlayer === 0 ? player1Name : player2Name;
+    const opponentName = currentPlayer === 0 ? player2Name : player1Name;
+    if (move === 1) {
+      return `${playerName} landed on an empty pit and captured ${opponentName}'s marbles!`;
+    } else if (move === 2) {
+      return `${playerName} landed in their Mancala and gets another turn!`;
+    } else {
+      return ''; // No special move occurred
+    }
   }
+  
+
+  const handleNameSubmit = (e) => {
+    e.preventDefault();
+    if (player1Name && player2Name) {
+      setNamesEntered(true);
+    } else {
+      alert("Please enter names for both players!");
+    }
+  };
 
   return (
     <div className='Game'>
       <h1>Mancala</h1>
-      <div className='turn'>
-        {currentPlayer === 0 ? 'Player 1' : 'Player 2'}'s Turn:
-      </div>
-      <p className='noti-box'> { displaySpecialMove(showSpecialMove) } </p>
-      <div className='board'>
-        <div className='scores'>{scorePits(0)}</div>
-        <div className='pits-box'>
-          <div>{renderTopPits()}</div>
-          <div>{renderBottomPits()}</div>
+      {!namesEntered ? (
+        <div className="name-entry-form">
+          <form onSubmit={handleNameSubmit}>
+            <div className="input-group">
+              <label htmlFor="player1Name">Player 1 Name:</label>
+              <input
+                type="text"
+                id="player1Name"
+                placeholder="Enter Player 1 Name"
+                value={player1Name}
+                onChange={(e) => setPlayer1Name(e.target.value)}
+              />
+            </div>
+            <div className="input-group">
+              <label htmlFor="player2Name">Player 2 Name:</label>
+              <input
+                type="text"
+                id="player2Name"
+                placeholder="Enter Player 2 Name"
+                value={player2Name}
+                onChange={(e) => setPlayer2Name(e.target.value)}
+              />
+            </div>
+            <button type="submit" className="start-game-button">Start Game</button>
+          </form>
         </div>
-        <div className='scores'>{scorePits(1)}</div>
-      </div>
-      <span>
-        <button onClick={returnToHomePage}>Return to Home</button>
-      </span>
+      ) : (
+        <>
+          <div className='turn'>
+            {currentPlayer === 0 ? `${player1Name}'s` : `${player2Name}'s`} Turn:
+          </div>
+          <p className='noti-box'> { displaySpecialMove(showSpecialMove) } </p>
+          <div className='board'>
+            <div className='scores'>{scorePits(0)}</div>
+            <div className='pits-box'>
+              <div>{renderTopPits()}</div>
+              <div>{renderBottomPits()}</div>
+            </div>
+            <div className='scores'>{scorePits(1)}</div>
+          </div>
+          <span>
+            <button onClick={returnToHomePage}>Return to Home</button>
+          </span>
+        </>
+      )}
     </div>
   );
+  
 };
 
 export default NewGame;

@@ -29,3 +29,45 @@ Back-end: Node.js, Express
 Database: MySQL  
 
 ## How To Run
+To run the Mancala game using Docker:
+
+- Install Docker: If you don't already have Docker installed, download and install it from Docker's official website.
+- Clone the Repository: Clone the project repository to your local machine using:
+
+bash
+Copy code
+git clone [repository-url]
+Replace [repository-url] with the URL of your project's repository.
+
+- Navigate to the Project Directory: Open a terminal and navigate to the directory where the project is stored.
+
+Build and Run with Docker Compose:
+
+- To build the Docker containers for the frontend, backend, and database, run:
+bash
+
+docker-compose build
+To start the application, run:
+bash
+
+docker-compose up
+The application should now be running on http://localhost:8000 (or another port if you've configured it differently in your docker-compose.yaml).
+Access the Application: Open a web browser and go to http://localhost:8000 to start playing Mancala.
+
+## Contributing
+This project is a collaborative effort, and contributions are always welcome. If you wish to contribute:
+
+- Fork the Repository: Create your own fork of the project.
+- Create a Feature Branch: Make your changes in a new git branch.
+- Commit Your Changes: Commit your changes with clear, descriptive commit messages.
+- Push to the Branch: Push your changes to your fork.
+- Submit a Pull Request: Submit a pull request to our repository for review.
+- Please ensure your code adheres to the project's coding standards and passes all tests.
+
+## Testing
+This project is equipped with automated tests to ensure functionality works as expected. To run these tests:
+Navigate to the project directory in your terminal.
+Run the test script using:
+bash
+Copy code
+npm test

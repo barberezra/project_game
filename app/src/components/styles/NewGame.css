@@ -5,7 +5,61 @@ h1 {
   margin: 4px;
 }
 
-/* for the player's turn header */
+.name-entry-form {
+  text-align: center;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  background: rgba(255, 255, 255, 0.549);
+  width: 100%; 
+  max-width: 400px; 
+  margin: auto;
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center; 
+}
+
+/* Button styling */
+.name-entry-form button {
+  padding: 15px 30px;
+  font-size: 20px; 
+  color: white;
+  background-color: #5C832F; 
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 80%; 
+  max-width: 350px; 
+  margin-top: 20px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+/* Input fields styling */
+input[type='text'] {
+  padding: 15px;
+  margin: 15px 0;
+  border: 2px solid #ACB992;
+  border-radius: 5px;
+  width: 80%; 
+  max-width: 350px; 
+  box-sizing: border-box;
+  font-size: 18px;
+  text-align: left; 
+}
+button:hover {
+  background-color: #cd6a31; 
+}
+
+/* Hover effects for input fields */
+input[type='text']:hover,
+input[type='text']:focus {
+  border-color: #cd6a31; 
+}
+
+
+
 .turn {
   font-size: 30px;
   font-weight: bold;

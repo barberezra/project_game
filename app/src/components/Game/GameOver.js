@@ -9,6 +9,8 @@ const GameOver = () => {
     let location = useLocation();
     const playerOneScore = location.state.player1Score;
     const playerTwoScore = location.state.player2Score;
+    const playerOneName = location.state.player1Name || "Player 1";
+    const playerTwoName = location.state.player2Name || "Player 2";
     const [showGameResults, setGameResults] = useState(0);
     const navigate = useNavigate();
     
@@ -69,13 +71,13 @@ const GameOver = () => {
     }
 
     // displays winner and loser or tie
-    const displayGameResults = (move) => {
-        if (move === 1) {
-            return {player1: '🎊 WINNER 🎊', player2: '💔 LOSER 💔'};
-        } else if (move === 2) {
-            return {player1: '💔 LOSER 💔', player2: '🎊 WINNER 🎊'};
+    const displayGameResults = (result) => {
+        if (result === 1) {
+            return { player1: `🎊 WINNER 🎊`, player2: `💔 LOSER 💔` };
+        } else if (result === 2) {
+            return { player1: `💔 LOSER 💔`, player2: `🎊 WINNER 🎊` };
         } else {
-            return {player1: '👔 TIE 👔', player2: '👔 TIE 👔'};
+            return { player1: '👔 TIE 👔', player2: '👔 TIE 👔' };
         }
     }
 
@@ -85,15 +87,15 @@ const GameOver = () => {
             <h1>GAME OVER</h1>
             <h2>Thanks for playing!</h2>
             <div className='score-box'>
-                    <h3> Final Score: { playerOneScore } - { playerTwoScore }</h3>
-                    <div className='display-score'>
-                        <h4> { displayGameResults(showGameResults).player1 } </h4>
-                        <p>PLAYER ONE</p>
-                    </div>
-                    <div className='display-score'>
-                        <h4> { displayGameResults(showGameResults).player2 } </h4>
-                        <p>PLAYER TWO</p>
-                    </div>
+                <h3> Final Score: {playerOneScore} - {playerTwoScore}</h3>
+                <div className='display-score'>
+                    <h4> {displayGameResults(showGameResults).player1} </h4>
+                    <p>{playerOneName}</p>
+                </div>
+                <div className='display-score'>
+                    <h4> {displayGameResults(showGameResults).player2} </h4>
+                    <p>{playerTwoName}</p>
+                </div>
             </div>
             <span>
                 <button onClick={returnToHomePage}>Go Home</button>
@@ -101,5 +103,6 @@ const GameOver = () => {
         </div>
     );
 }
+
 
 export default GameOver;

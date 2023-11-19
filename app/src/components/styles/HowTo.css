@@ -1,0 +1,58 @@
+body, html {
+    overflow-y: auto; 
+}
+
+.content {
+    margin: 5% 10% 7% 10%;
+}
+
+.home {
+    margin: 3%;
+    width: 200px;
+    height: 75px;
+}
+
+h1 {
+    font-size: 80px;
+    margin-top: 1%;
+}
+
+h2 {
+    font-size: 22.2px;
+    margin-top: 0px;
+    margin-bottom: 2%;
+    letter-spacing: 2px;
+}
+
+li {
+    font-size: 18px;
+    margin-top: 0px;
+    margin-bottom: 2%;
+}
+
+
+.how-to-container {
+    padding: 20px;
+}
+
+/* Styling for the video container */
+.video-container {
+    margin-bottom: 20px;
+}
+
+/* Styling for the text instructions container */
+.text-instructions {
+    background-color: #ffffff64; 
+    padding: 15px;
+    border-radius: 5px; 
+    margin-bottom: 20px;
+}
+
+/* Adjust list items indentation and spacing */
+.text-instructions ul {
+    padding-left: 40px; 
+}
+
+.text-instructions li {
+    margin-bottom: 2px; 
+}
