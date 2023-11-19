@@ -58,7 +58,37 @@ input[type='text']:focus {
   border-color: #cd6a31; 
 }
 
+/* Styling for the Pronouns Select Dropdown */
+.select-pronouns {
+  margin: 10px 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 2px solid #6D83F2; 
+  background-color: #FFFFFF;
+  color: #333333;
+  font-size: 16px;
+  width: 50%; 
+}
 
+/* Styling for Custom Pronouns Input */
+.custom-pronouns-input {
+  margin: 10px 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 2px solid #6D83F2; 
+  background-color: #FFFFFF;
+  color: #333333;
+  font-size: 16px;
+  width: 50%; 
+}
+
+/* Label styling */
+.label-pronouns {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555555;
+}
 
 .turn {
   font-size: 30px;

@@ -22,15 +22,23 @@ const NewGame = () => {
   const [currentPlayer, setCurrentPlayer] = useState(0);
   const [emptyRow, setEmptyRow] = useState(false);
   const [showSpecialMove, setSpecialMove] = useState(0);
+  const [lastMoveCapturedMarbles, setLastMoveCapturedMarbles] = useState(0);
+  const [lastMovePlayer, setLastMovePlayer] = useState(null);
+  // names
   const [player1Name, setPlayer1Name] = useState('');
   const [player2Name, setPlayer2Name] = useState('');
   const [namesEntered, setNamesEntered] = useState(false);
+  // pronouns
+  const [player1Pronouns, setPlayer1Pronouns] = useState('');
+  const [player2Pronouns, setPlayer2Pronouns] = useState('');
+  const [player1CustomPronouns, setPlayer1CustomPronouns] = useState('');
+  const [player2CustomPronouns, setPlayer2CustomPronouns] = useState('');
   const navigate = useNavigate();
 
   // checks to see if the game is over
   // updated board will not show the final score because the state
   // doesn't update until after the next (a React thing)
-// checks to see if the game is over by checking if one side's pits are all empty
+  // checks to see if the game is over by checking if one side's pits are all empty
   const isGameOver = (updatedBoard) => {
     // Check if all pits are empty on one side
     const topRowEmpty = updatedBoard.slice(0, 6).every(pit => pit === 0);
@@ -88,8 +96,11 @@ const NewGame = () => {
       updatedBoard[12 - lastPitIndex] = 0;
       updatedBoard[currentPlayer === 0 ? 6 : 13] += capturedStones + 1;
       setSpecialMove(1); // Notify user of captured pit move
+      setLastMovePlayer(currentPlayer);
+      setLastMoveCapturedMarbles(capturedStones); 
     } else {
       setSpecialMove(0); // Reset special move notification
+      setLastMoveCapturedMarbles(0);
     }
   
     // Check if the last marble lands in the player's store for an extra turn
@@ -219,33 +230,150 @@ const NewGame = () => {
 
   // notifies player if they completed a special move
   const displaySpecialMove = (move) => {
-    const playerName = currentPlayer === 0 ? player1Name : player2Name;
-    const opponentName = currentPlayer === 0 ? player2Name : player1Name;
+    const movePlayerName = move === 1 ? (lastMovePlayer === 0 ? player1Name : player2Name) : (currentPlayer === 0 ? player1Name : player2Name);
+    const opponentPlayerName = move === 1 ? (lastMovePlayer === 0 ? player2Name : player1Name) : (currentPlayer === 0 ? player2Name : player1Name);
+  
+    // extract the pronoun for the current player
+    const movePlayerSubjectivePronoun = (move === 1 ? (lastMovePlayer === 0 ? player1Pronouns : player2Pronouns) : (currentPlayer === 0 ? player1Pronouns : player2Pronouns)).split('/')[2];
+  
+    // extract the pronoun for the opponent
+    const opponentPossessivePronoun = (move === 1 ? (lastMovePlayer === 0 ? player2Pronouns : player1Pronouns) : (currentPlayer === 0 ? player2Pronouns : player1Pronouns)).split('/')[2] || (move === 1 ? (lastMovePlayer === 0 ? player2Pronouns : player1Pronouns) : (currentPlayer === 0 ? player2Pronouns : player1Pronouns)).split('/')[2];
+  
     if (move === 1) {
-      return `${playerName} landed on an empty pit and captured ${opponentName}'s marbles!`;
+      return `${movePlayerName} landed on ${movePlayerSubjectivePronoun} empty pit and captured ${lastMoveCapturedMarbles} of ${opponentPlayerName}'s marbles, capturing ${lastMoveCapturedMarbles + 1} marbles in total!`;
     } else if (move === 2) {
-      return `${playerName} landed in their Mancala and gets another turn!`;
+      return `${movePlayerName} landed in ${movePlayerSubjectivePronoun} Mancala and gets another turn!`;
     } else {
-      return ''; // No special move occurred
+      return '';
     }
-  }
+  };
   
 
   const handleNameSubmit = (e) => {
     e.preventDefault();
-    if (player1Name && player2Name) {
+    if (player1Name && player2Name &&
+        player1Pronouns && player2Pronouns &&
+        (player1Pronouns !== 'other' || player1CustomPronouns) &&
+        (player2Pronouns !== 'other' || player2CustomPronouns)) {
       setNamesEntered(true);
     } else {
-      alert("Please enter names for both players!");
+      alert("Please enter names and select pronouns for both players!");
     }
-  };
+    console.log('Player 1 Name:', player1Name, 'Pronouns:', player1Pronouns, 'Custom:', player1CustomPronouns);
+    console.log('Player 2 Name:', player2Name, 'Pronouns:', player2Pronouns, 'Custom:', player2CustomPronouns);
 
+  };  
+  
+  // return (
+  //   <div className='Game'>
+  //     <h1>Mancala</h1>
+  //     {!namesEntered ? (
+  //       <div className="name-entry-form">
+  //         <form onSubmit={handleNameSubmit}>
+  //           {/* Player 1 Name Input */}
+  //           <div className="input-group">
+  //             <label htmlFor="player1Name">Player 1 Name:</label>
+  //             <input
+  //               type="text"
+  //               id="player1Name"
+  //               placeholder="Enter Player 1 Name"
+  //               value={player1Name}
+  //               onChange={(e) => setPlayer1Name(e.target.value)}
+  //             />
+  //           </div>
+    
+  //           {/* Player 1 Pronoun Selection */}
+  //           <div className="input-group">
+  //             <label htmlFor="player1Pronouns">Player 1 Pronouns:</label>
+  //             <select
+  //               id="player1Pronouns"
+  //               value={player1Pronouns}
+  //               onChange={(e) => setPlayer1Pronouns(e.target.value)}
+  //             >
+  //               <option value="">Select Pronouns</option>
+  //               <option value="she/her/her">She/Her/Her</option>
+  //               <option value="he/him/his">He/Him/His</option>
+  //               <option value="they/them/their">They/Them/Their</option>
+  //               <option value="other">Other</option>
+  //             </select>
+  //             {player1Pronouns === 'other' && (
+  //               <input
+  //                 type="text"
+  //                 placeholder="Enter Pronouns"
+  //                 value={player1CustomPronouns}
+  //                 onChange={(e) => setPlayer1CustomPronouns(e.target.value.toLowerCase())}
+  //               />
+  //             )}
+  //           </div>
+  
+  //           {/* Player 2 Name Input */}
+  //           <div className="input-group">
+  //             <label htmlFor="player2Name">Player 2 Name:</label>
+  //             <input
+  //               type="text"
+  //               id="player2Name"
+  //               placeholder="Enter Player 2 Name"
+  //               value={player2Name}
+  //               onChange={(e) => setPlayer2Name(e.target.value)}
+  //             />
+  //           </div>
+    
+  //           {/* Player 2 Pronoun Selection */}
+  //           <div className="input-group">
+  //             <label htmlFor="player2Pronouns">Player 2 Pronouns:</label>
+  //             <select
+  //               id="player2Pronouns"
+  //               value={player2Pronouns}
+  //               onChange={(e) => setPlayer2Pronouns(e.target.value)}
+  //             >
+  //               <option value="">Select Pronouns</option>
+  //               <option value="she/her/her">She/Her/Her</option>
+  //               <option value="he/him/his">He/Him/His</option>
+  //               <option value="they/them/their">They/Them/Their</option>
+  //               <option value="other">Other</option>
+  //             </select>
+  //             {player2Pronouns === 'other' && (
+  //               <input
+  //                 type="text"
+  //                 placeholder="Enter Pronouns"
+  //                 value={player2CustomPronouns}
+  //                 onChange={(e) => setPlayer2CustomPronouns(e.target.value.toLowerCase())}
+  //               />
+  //             )}
+  //           </div>
+  
+  //           <button type="submit" className="start-game-button">Start Game</button>
+  //         </form>
+  //       </div>
+  //     ) : (
+  //       <>
+  //         <div className='turn'>
+  //           {currentPlayer === 0 ? `${player1Name}'s Turn` : `${player2Name}'s Turn`}
+  //         </div>
+  //         <p className='noti-box'> {displaySpecialMove(showSpecialMove)} </p>
+  //         <div className='board'>
+  //           <div className='scores'>{scorePits(0)}</div>
+  //           <div className='pits-box'>
+  //             <div>{renderTopPits()}</div>
+  //             <div>{renderBottomPits()}</div>
+  //           </div>
+  //           <div className='scores'>{scorePits(1)}</div>
+  //         </div>
+  //         <span>
+  //           <button onClick={returnToHomePage}>Return to Home</button>
+  //         </span>
+  //       </>
+  //     )}
+  //   </div>
+  // );
+  
   return (
     <div className='Game'>
       <h1>Mancala</h1>
       {!namesEntered ? (
         <div className="name-entry-form">
           <form onSubmit={handleNameSubmit}>
+            {/* Player 1 Name Input */}
             <div className="input-group">
               <label htmlFor="player1Name">Player 1 Name:</label>
               <input
@@ -256,6 +384,34 @@ const NewGame = () => {
                 onChange={(e) => setPlayer1Name(e.target.value)}
               />
             </div>
+  
+            {/* Player 1 Pronoun Selection */}
+            <div className="input-group">
+              <label htmlFor="player1Pronouns" className="label-pronouns">Player 1 Pronouns:</label>
+              <select
+                id="player1Pronouns"
+                value={player1Pronouns}
+                onChange={(e) => setPlayer1Pronouns(e.target.value)}
+                className="select-pronouns"
+              >
+                <option value="">Select Pronouns</option>
+                <option value="she/her/her">She/Her/Her</option>
+                <option value="he/him/his">He/Him/His</option>
+                <option value="they/them/their">They/Them/Their</option>
+                <option value="other">Other</option>
+              </select>
+              {player1Pronouns === 'other' && (
+                <input
+                  type="text"
+                  placeholder="Enter Pronouns"
+                  value={player1CustomPronouns}
+                  onChange={(e) => setPlayer1CustomPronouns(e.target.value.toLowerCase())}
+                  className="custom-pronouns-input"
+                />
+              )}
+            </div>
+  
+            {/* Player 2 Name Input */}
             <div className="input-group">
               <label htmlFor="player2Name">Player 2 Name:</label>
               <input
@@ -266,15 +422,42 @@ const NewGame = () => {
                 onChange={(e) => setPlayer2Name(e.target.value)}
               />
             </div>
+  
+            {/* Player 2 Pronoun Selection */}
+            <div className="input-group">
+              <label htmlFor="player2Pronouns" className="label-pronouns">Player 2 Pronouns:</label>
+              <select
+                id="player2Pronouns"
+                value={player2Pronouns}
+                onChange={(e) => setPlayer2Pronouns(e.target.value)}
+                className="select-pronouns"
+              >
+                <option value="">Select Pronouns</option>
+                <option value="she/her/her">She/Her/Her</option>
+                <option value="he/him/his">He/Him/His</option>
+                <option value="they/them/their">They/Them/Their</option>
+                <option value="other">Other</option>
+              </select>
+              {player2Pronouns === 'other' && (
+                <input
+                  type="text"
+                  placeholder="Enter Pronouns"
+                  value={player2CustomPronouns}
+                  onChange={(e) => setPlayer2CustomPronouns(e.target.value.toLowerCase())}
+                  className="custom-pronouns-input"
+                />
+              )}
+            </div>
+  
             <button type="submit" className="start-game-button">Start Game</button>
           </form>
         </div>
       ) : (
         <>
           <div className='turn'>
-            {currentPlayer === 0 ? `${player1Name}'s` : `${player2Name}'s`} Turn:
+            {currentPlayer === 0 ? `${player1Name}'s Turn` : `${player2Name}'s Turn`}
           </div>
-          <p className='noti-box'> { displaySpecialMove(showSpecialMove) } </p>
+          <p className='noti-box'> {displaySpecialMove(showSpecialMove)} </p>
           <div className='board'>
             <div className='scores'>{scorePits(0)}</div>
             <div className='pits-box'>

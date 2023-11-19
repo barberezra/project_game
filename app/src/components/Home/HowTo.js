@@ -27,7 +27,7 @@ const HowTo = () => {
             <div className="text-instructions">
                 <h2>Alternatively, follow these text instructions:</h2>
                 <ul>
-                    <li>Each player owns six pits along with a larger store pit on their end of the board.</li>
+                    <li>Each player owns six pits along with a larger store pit (Mancala) on their end of the board.</li>
                     <li>Players take turns to pick up all stones from one of their pits and distribute them, one by one, into subsequent pits in a counter-clockwise direction.</li>
                     <li>If the last stone lands in your store, you get another turn.</li>
                     <li>If the last stone lands in an empty pit on your side, you capture that stone and any stones in the pit directly opposite.</li>
