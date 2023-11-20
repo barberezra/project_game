@@ -31,14 +31,11 @@ const NewGame = () => {
   // pronouns
   const [player1Pronouns, setPlayer1Pronouns] = useState('');
   const [player2Pronouns, setPlayer2Pronouns] = useState('');
-  const [player1CustomPronouns, setPlayer1CustomPronouns] = useState('');
-  const [player2CustomPronouns, setPlayer2CustomPronouns] = useState('');
   const navigate = useNavigate();
 
   // checks to see if the game is over
   // updated board will not show the final score because the state
   // doesn't update until after the next (a React thing)
-  // checks to see if the game is over by checking if one side's pits are all empty
   const isGameOver = (updatedBoard) => {
     // Check if all pits are empty on one side
     const topRowEmpty = updatedBoard.slice(0, 6).every(pit => pit === 0);
@@ -232,38 +229,50 @@ const NewGame = () => {
   const displaySpecialMove = (move) => {
     const movePlayerName = move === 1 ? (lastMovePlayer === 0 ? player1Name : player2Name) : (currentPlayer === 0 ? player1Name : player2Name);
     const opponentPlayerName = move === 1 ? (lastMovePlayer === 0 ? player2Name : player1Name) : (currentPlayer === 0 ? player2Name : player1Name);
+    const movePlayerPronouns = move === 1 ? (lastMovePlayer === 0 ? player1Pronouns : player2Pronouns) : (currentPlayer === 0 ? player1Pronouns : player2Pronouns);
+    const opponentPronouns = move === 1 ? (lastMovePlayer === 0 ? player2Pronouns : player1Pronouns) : (currentPlayer === 0 ? player2Pronouns : player1Pronouns);
   
-    // extract the pronoun for the current player
-    const movePlayerSubjectivePronoun = (move === 1 ? (lastMovePlayer === 0 ? player1Pronouns : player2Pronouns) : (currentPlayer === 0 ? player1Pronouns : player2Pronouns)).split('/')[2];
-  
-    // extract the pronoun for the opponent
-    const opponentPossessivePronoun = (move === 1 ? (lastMovePlayer === 0 ? player2Pronouns : player1Pronouns) : (currentPlayer === 0 ? player2Pronouns : player1Pronouns)).split('/')[2] || (move === 1 ? (lastMovePlayer === 0 ? player2Pronouns : player1Pronouns) : (currentPlayer === 0 ? player2Pronouns : player1Pronouns)).split('/')[2];
+    // Determining the correct possessive pronoun or name
+    const movePlayerPossessive = movePlayerPronouns === 'other' ? `${movePlayerName}'s` : getPronoun(movePlayerPronouns, 2);
+    const opponentPossessive = opponentPronouns === 'other' ? `${opponentPlayerName}'s` : getPronoun(opponentPronouns, 2);
   
     if (move === 1) {
-      return `${movePlayerName} landed on ${movePlayerSubjectivePronoun} empty pit and captured ${lastMoveCapturedMarbles} of ${opponentPlayerName}'s marbles, capturing ${lastMoveCapturedMarbles + 1} marbles in total!`;
+      return `${movePlayerName} landed on ${movePlayerPossessive} empty pit and captured ${lastMoveCapturedMarbles} of ${opponentPlayerName}'s marbles, capturing ${lastMoveCapturedMarbles + 1} marbles in total!`;
     } else if (move === 2) {
-      return `${movePlayerName} landed in ${movePlayerSubjectivePronoun} Mancala and gets another turn!`;
+      return `${movePlayerName} landed in ${movePlayerPossessive} Mancala and gets another turn!`;
     } else {
       return '';
     }
   };
   
-
+  // Helper function to get the correct pronoun form
+  const getPronoun = (pronoun, form) => {
+    return pronoun.split('/')[form];
+  };
+  
   const handleNameSubmit = (e) => {
     e.preventDefault();
-    if (player1Name && player2Name &&
-        player1Pronouns && player2Pronouns &&
-        (player1Pronouns !== 'other' || player1CustomPronouns) &&
-        (player2Pronouns !== 'other' || player2CustomPronouns)) {
+    if (player1Name && player2Name && player1Pronouns && player2Pronouns) {
       setNamesEntered(true);
     } else {
       alert("Please enter names and select pronouns for both players!");
     }
-    console.log('Player 1 Name:', player1Name, 'Pronouns:', player1Pronouns, 'Custom:', player1CustomPronouns);
-    console.log('Player 2 Name:', player2Name, 'Pronouns:', player2Pronouns, 'Custom:', player2CustomPronouns);
-
-  };  
+    console.log('Player 1 Name:', player1Name, 'Pronouns:', player1Pronouns);
+    console.log('Player 2 Name:', player2Name, 'Pronouns:', player2Pronouns);
+  };
   
+  const handlePronounSelection = (player, value) => {
+    if (value === 'other') {
+      alert("Sorry, right now we are unable to incorporate your preferred pronouns, but we will use your name instead. Sorry again for the inconvenience.");
+    }
+  
+    if (player === 1) {
+      setPlayer1Pronouns(value);
+    } else {
+      setPlayer2Pronouns(value);
+    }
+  };  
+
   return (
     <div className='Game'>
       <h1>Mancala</h1>
@@ -288,7 +297,7 @@ const NewGame = () => {
               <select
                 id="player1Pronouns"
                 value={player1Pronouns}
-                onChange={(e) => setPlayer1Pronouns(e.target.value)}
+                onChange={(e) => handlePronounSelection(1, e.target.value)}
                 className="select-pronouns"
               >
                 <option value="">Select Pronouns</option>
@@ -297,15 +306,6 @@ const NewGame = () => {
                 <option value="they/them/their">They/Them/Their</option>
                 <option value="other">Other</option>
               </select>
-              {player1Pronouns === 'other' && (
-                <input
-                  type="text"
-                  placeholder="Enter Pronouns"
-                  value={player1CustomPronouns}
-                  onChange={(e) => setPlayer1CustomPronouns(e.target.value.toLowerCase())}
-                  className="custom-pronouns-input"
-                />
-              )}
             </div>
   
             {/* Player 2 Name Input */}
@@ -326,7 +326,7 @@ const NewGame = () => {
               <select
                 id="player2Pronouns"
                 value={player2Pronouns}
-                onChange={(e) => setPlayer2Pronouns(e.target.value)}
+                onChange={(e) => handlePronounSelection(2, e.target.value)}
                 className="select-pronouns"
               >
                 <option value="">Select Pronouns</option>
@@ -335,15 +335,6 @@ const NewGame = () => {
                 <option value="they/them/their">They/Them/Their</option>
                 <option value="other">Other</option>
               </select>
-              {player2Pronouns === 'other' && (
-                <input
-                  type="text"
-                  placeholder="Enter Pronouns"
-                  value={player2CustomPronouns}
-                  onChange={(e) => setPlayer2CustomPronouns(e.target.value.toLowerCase())}
-                  className="custom-pronouns-input"
-                />
-              )}
             </div>
   
             <button type="submit" className="start-game-button">Start Game</button>
