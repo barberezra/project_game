@@ -15,10 +15,10 @@ const Home = () => (
             <button className="home">How To Play</button>
         </Link>
         <br />
-        <Link to="/rankings">
+        {/* <Link to="/rankings">
             <button className="home">Rankings</button>
-        </Link>
-        <br />
+        </Link> */}
+        {/* <br /> */}
         <Link to="/about">
             <button className="home">About</button>
         </Link>

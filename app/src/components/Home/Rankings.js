@@ -1,4 +1,5 @@
 // RANKINGS PAGE FOR THE OTHER TEAM
+// we couldn't have this done on time
 
 import React from 'react';
 import { useNavigate } from "react-router-dom";

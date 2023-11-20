@@ -57,8 +57,7 @@ To start playing Mancala:
 1. Open your web browser and navigate to http://localhost:7555.
 2. Click on the 'New Game' button on the home page.
 3. Enter the names of the two players.
-4. Select the pronouns for each player from the dropdown menu or enter custom pronouns if you choose 'Other'.
-5. Click 'Start Game' to begin.
+4. Click 'Start Game' to begin.
 
 ### Game Rules
 Mancala is played with a board divided into two parts, each with six pits and a larger store pit at the end. The game begins with four stones in each of the smaller pits.
