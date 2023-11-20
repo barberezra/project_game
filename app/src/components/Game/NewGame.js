@@ -54,7 +54,6 @@ const NewGame = () => {
     }
   }
 
-  // // handles whenever a player clicks on a pit in their own section
   const handlePitClick = (pitIndex) => {
     // Invalid move if pit is empty or if it's not the player's own pit
     if (board[pitIndex] === 0 || 
@@ -67,22 +66,38 @@ const NewGame = () => {
     let marbles = updatedBoard[pitIndex];
     updatedBoard[pitIndex] = 0;
     let lastPitIndex = pitIndex;
-    
-    // Distribute marbles
-    while (marbles > 0) {
-      lastPitIndex = (lastPitIndex + 1) % 14;
   
-      // Skip opponent's store
-      if ((currentPlayer === 0 && lastPitIndex === 13) || 
-          (currentPlayer === 1 && lastPitIndex === 6)) {
-        continue;
-      }
+    // Function to update each pit with delay
+    const updatePit = (index, remainingMarbles) => {
+      setTimeout(() => {
+        lastPitIndex = index;
+        
+        // Skip opponent's store
+        if ((currentPlayer === 0 && lastPitIndex === 13) || 
+            (currentPlayer === 1 && lastPitIndex === 6)) {
+          lastPitIndex = (lastPitIndex + 1) % 14;
+        }
   
-      updatedBoard[lastPitIndex]++;
-      marbles--;
-    }
+        updatedBoard[lastPitIndex]++;
+        remainingMarbles--;
   
-    // Capture logic, only if the last marble lands in an empty pit on the current player's side
+        setBoard([...updatedBoard]); // Update the board state
+  
+        if (remainingMarbles > 0) {
+          updatePit((lastPitIndex + 1) % 14, remainingMarbles);
+        } else {
+          // Capture logic and end-of-turn handling
+          handleEndOfTurn(lastPitIndex, updatedBoard);
+        }
+      }, 500); // 500 milliseconds delay for each pit update
+    };
+  
+    // Start updating pits
+    updatePit((lastPitIndex + 1) % 14, marbles);
+  };
+  
+  const handleEndOfTurn = (lastPitIndex, updatedBoard) => {
+    // Capture logic
     if ((currentPlayer === 0 && lastPitIndex < 6 && updatedBoard[lastPitIndex] === 1 && updatedBoard[12 - lastPitIndex] > 0) ||
         (currentPlayer === 1 && lastPitIndex > 6 && lastPitIndex < 13 && updatedBoard[lastPitIndex] === 1 && updatedBoard[12 - lastPitIndex] > 0)) {
       let capturedStones = updatedBoard[12 - lastPitIndex];
@@ -91,7 +106,7 @@ const NewGame = () => {
       updatedBoard[currentPlayer === 0 ? 6 : 13] += capturedStones + 1;
       setSpecialMove(1); // Notify user of captured pit move
       setLastMovePlayer(currentPlayer);
-      setLastMoveCapturedMarbles(capturedStones); 
+      setLastMoveCapturedMarbles(capturedStones);
     } else {
       setSpecialMove(0); // Reset special move notification
       setLastMoveCapturedMarbles(0);
@@ -112,7 +127,8 @@ const NewGame = () => {
   
     // Check if there are any empty rows; if so, open up all pits
     isRowEmpty(updatedBoard);
-  };  
+  };
+  
 
 // makes pits for Player 2
   const renderTopPits = () => {
