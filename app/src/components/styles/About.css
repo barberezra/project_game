@@ -1,89 +1,77 @@
 body, html {
     overflow-y: auto;
-    margin: 0; /* Reset default margin */
-    padding: 0; /* Reset default padding */
+    margin: 0; 
+    padding: 0; 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Consistent font family */
 }
 
 /* Assuming .content is the main container for your about page content */
 .content {
-    display: flex; /* enables flexbox */
-    flex-direction: column; /* stacks children vertically */
-    align-items: center; /* centers children horizontally */
-    justify-content: center; /* centers children vertically if there's enough space */
-    text-align: center; /* centers the text inside the children */
-    min-height: 100vh; /* at least the height of the viewport */
-    margin-top: 0; /* adjust the top margin as needed */
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    text-align: center; 
+    min-height: 100vh; 
+    margin-top: 0; 
 }
 
 /* Individual section/container adjustments */
 .creators-container, .acknowledgments-container, .contact-container {
-    width: 100%; /* ensures that the containers take full width */
-    /* remove any specific top/bottom margins if you want equal spacing */
+    width: 100%; 
 }
 
-/* If .content is not the main container, replace .content with the correct class */
-
-
-/* Header styles */
 h1 {
-    font-size: 4vw; /* Responsive font size */
-    margin: 2% 0; /* Adjusted top margin */
+    font-size: 4vw; 
+    margin: 2% 0; 
 }
 
 h2 {
-    font-size: 2vw; /* Responsive font size */
-    margin: 1% 0; /* Reduced space above and below */
-    letter-spacing: 1px; /* Slight letter-spacing for aesthetics */
+    font-size: 2vw; 
+    margin: 1% 0; 
+    letter-spacing: 1px;
 }
 
-/* About container styling */
 .about-container {
     padding: 20px;
-    border-radius: 5px; /* Rounded corners for the container */
+    border-radius: 5px; 
 }
 
-/* Centering the creators list and removing extra space */
 .creators-container {
-    text-align: center; /* Center-align the text */
-    margin: 20px 0; /* Reduced top and bottom margin */
+    text-align: center; 
+    margin: 20px 0;
 }
 
 .creators-container h2 {
-    margin-bottom: 10px; /* Reduced space below the header */
+    margin-bottom: 10px; 
 }
 
 .creators-container ul {
-    list-style: none; /* Removes the bullet points */
-    padding: 0; /* Resets the padding */
-    margin: 0; /* Removes default margin to reduce space */
+    list-style: none;
+    padding: 0;
+    margin: 0; 
 }
 
 .creators-container li {
-    margin-bottom: 10px; /* Consistent bottom margin for list items */
+    margin-bottom: 10px; 
 }
 
-/* Acknowledgments container */
 .acknowledgments-container {
     padding: 15px;
     border-radius: 5px;
-    margin-bottom: 20px; /* Consistent spacing */
+    margin-bottom: 20px; 
 }
 
-/* Contact container */
 .contact-container {
     padding: 15px;
     border-radius: 5px;
-    margin-bottom: 20px; /* Consistent spacing */
+    margin-bottom: 20px; 
 }
 
 @media (max-width: 600px) {
-    /* Responsive adjustments for smaller screens */
     h1 { font-size: 6vw; }
     h2 { font-size: 5vw; }
     li { font-size: 3.5vw; }
-
-    /* Adjust padding and margins for smaller screens */
     .about-container,
     .acknowledgments-container,
     .contact-container {

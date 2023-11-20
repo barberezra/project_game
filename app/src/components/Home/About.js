@@ -35,6 +35,9 @@ const About = () => {
                     provided feedback and support throughout the development process!
                 </p>
             </div>
+            <span>
+                <button onClick={returnToHomePage}>Go Back</button>
+            </span>
         </div>
     );
 };
