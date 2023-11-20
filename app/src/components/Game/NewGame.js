@@ -29,8 +29,8 @@ const NewGame = () => {
   const [player2Name, setPlayer2Name] = useState('');
   const [namesEntered, setNamesEntered] = useState(false);
   // pronouns
-  const [player1Pronouns, setPlayer1Pronouns] = useState('');
-  const [player2Pronouns, setPlayer2Pronouns] = useState('');
+  // const [player1Pronouns, setPlayer1Pronouns] = useState('');
+  // const [player2Pronouns, setPlayer2Pronouns] = useState('');
   const navigate = useNavigate();
 
   // checks to see if the game is over
@@ -229,49 +229,49 @@ const NewGame = () => {
   const displaySpecialMove = (move) => {
     const movePlayerName = move === 1 ? (lastMovePlayer === 0 ? player1Name : player2Name) : (currentPlayer === 0 ? player1Name : player2Name);
     const opponentPlayerName = move === 1 ? (lastMovePlayer === 0 ? player2Name : player1Name) : (currentPlayer === 0 ? player2Name : player1Name);
-    const movePlayerPronouns = move === 1 ? (lastMovePlayer === 0 ? player1Pronouns : player2Pronouns) : (currentPlayer === 0 ? player1Pronouns : player2Pronouns);
-    const opponentPronouns = move === 1 ? (lastMovePlayer === 0 ? player2Pronouns : player1Pronouns) : (currentPlayer === 0 ? player2Pronouns : player1Pronouns);
+    // const movePlayerPronouns = move === 1 ? (lastMovePlayer === 0 ? player1Pronouns : player2Pronouns) : (currentPlayer === 0 ? player1Pronouns : player2Pronouns);
+    // const opponentPronouns = move === 1 ? (lastMovePlayer === 0 ? player2Pronouns : player1Pronouns) : (currentPlayer === 0 ? player2Pronouns : player1Pronouns);
   
     // Determining the correct possessive pronoun or name
-    const movePlayerPossessive = movePlayerPronouns === 'other' ? `${movePlayerName}'s` : getPronoun(movePlayerPronouns, 2);
-    const opponentPossessive = opponentPronouns === 'other' ? `${opponentPlayerName}'s` : getPronoun(opponentPronouns, 2);
+    // const movePlayerPossessive = movePlayerPronouns === 'other' ? `${movePlayerName}'s` : getPronoun(movePlayerPronouns, 2);
+    // const opponentPossessive = opponentPronouns === 'other' ? `${opponentPlayerName}'s` : getPronoun(opponentPronouns, 2);
   
     if (move === 1) {
-      return `${movePlayerName} landed on ${movePlayerPossessive} empty pit and captured ${lastMoveCapturedMarbles} of ${opponentPlayerName}'s marbles, capturing ${lastMoveCapturedMarbles + 1} marbles in total!`;
+      return `${movePlayerName} landed on their empty pit and captured ${lastMoveCapturedMarbles} of ${opponentPlayerName}'s marbles, capturing ${lastMoveCapturedMarbles + 1} marbles in total!`;
     } else if (move === 2) {
-      return `${movePlayerName} landed in ${movePlayerPossessive} Mancala and gets another turn!`;
+      return `${movePlayerName} landed in their Mancala and gets another turn!`;
     } else {
       return '';
     }
   };
   
   // Helper function to get the correct pronoun form
-  const getPronoun = (pronoun, form) => {
-    return pronoun.split('/')[form];
-  };
+  // const getPronoun = (pronoun, form) => {
+  //   return pronoun.split('/')[form];
+  // };
   
   const handleNameSubmit = (e) => {
     e.preventDefault();
-    if (player1Name && player2Name && player1Pronouns && player2Pronouns) {
+    if (player1Name && player2Name) {
       setNamesEntered(true);
     } else {
-      alert("Please enter names and select pronouns for both players!");
+      alert("Please enter names for both players!");
     }
-    console.log('Player 1 Name:', player1Name, 'Pronouns:', player1Pronouns);
-    console.log('Player 2 Name:', player2Name, 'Pronouns:', player2Pronouns);
+    // console.log('Player 1 Name:', player1Name, 'Pronouns:', player1Pronouns);
+    // console.log('Player 2 Name:', player2Name, 'Pronouns:', player2Pronouns);
   };
   
-  const handlePronounSelection = (player, value) => {
-    if (value === 'other') {
-      alert("Sorry, right now we are unable to incorporate your preferred pronouns, but we will use your name instead. Sorry again for the inconvenience.");
-    }
+  // const handlePronounSelection = (player, value) => {
+  //   if (value === 'other') {
+  //     alert("Sorry, right now we are unable to incorporate your preferred pronouns, but we will use your name instead. Sorry again for the inconvenience.");
+  //   }
   
-    if (player === 1) {
-      setPlayer1Pronouns(value);
-    } else {
-      setPlayer2Pronouns(value);
-    }
-  };  
+  //   if (player === 1) {
+  //     setPlayer1Pronouns(value);
+  //   } else {
+  //     setPlayer2Pronouns(value);
+  //   }
+  // };  
 
   return (
     <div className='Game'>
@@ -279,6 +279,7 @@ const NewGame = () => {
       {!namesEntered ? (
         <div className="name-entry-form">
           <form onSubmit={handleNameSubmit}>
+
             {/* Player 1 Name Input */}
             <div className="input-group">
               <label htmlFor="player1Name">Player 1 Name:</label>
@@ -291,7 +292,7 @@ const NewGame = () => {
               />
             </div>
   
-            {/* Player 1 Pronoun Selection */}
+            {/* Player 1 Pronoun Selection
             <div className="input-group">
               <label htmlFor="player1Pronouns" className="label-pronouns">Player 1 Pronouns:</label>
               <select
@@ -306,7 +307,7 @@ const NewGame = () => {
                 <option value="they/them/their">They/Them/Their</option>
                 <option value="other">Other</option>
               </select>
-            </div>
+            </div> */}
   
             {/* Player 2 Name Input */}
             <div className="input-group">
@@ -320,7 +321,7 @@ const NewGame = () => {
               />
             </div>
   
-            {/* Player 2 Pronoun Selection */}
+            {/* Player 2 Pronoun Selection
             <div className="input-group">
               <label htmlFor="player2Pronouns" className="label-pronouns">Player 2 Pronouns:</label>
               <select
@@ -335,7 +336,7 @@ const NewGame = () => {
                 <option value="they/them/their">They/Them/Their</option>
                 <option value="other">Other</option>
               </select>
-            </div>
+            </div> */}
   
             <button type="submit" className="start-game-button">Start Game</button>
           </form>
