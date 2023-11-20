@@ -89,7 +89,7 @@ const NewGame = () => {
           // Capture logic and end-of-turn handling
           handleEndOfTurn(lastPitIndex, updatedBoard);
         }
-      }, 500); // 500 milliseconds delay for each pit update
+      }, 400); // 400 milliseconds delay for each pit update
     };
   
     // Start updating pits
