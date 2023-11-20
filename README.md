@@ -79,7 +79,6 @@ If the last stone you sow lands in your own store, you get an extra turn.
 The game ends when all six pits on one side of the board are empty. The player with the most stones in their store at the end of the game wins.
 
 ### Special Features
-- **Pronoun Selection**: Players can select pronouns to be used during the game for a personalized experience.
 - **Special Move Notifications**: The game will notify players of any special moves such as captures or extra turns.
 
 ### Troubleshooting
