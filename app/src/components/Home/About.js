@@ -31,8 +31,7 @@ const About = () => {
             <div className="acknowledgments-container">
                 <h2>Acknowledgments</h2>
                 <p>
-                    Special thanks to Professor Matthew Lepinski for the mentorship and to all who 
-                    provided feedback and support throughout the development process!
+                    We would like to thank Professor Matthew Lepinski for the mentorship and to all who provided feedback and support throughout the development process! Additionnaly, thank you to AlgorithmArena for working on a portion of our game's database, which entails showing ranked players from db: most wins, most loses, and more!
                 </p>
             </div>
             <span>
