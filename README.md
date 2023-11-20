@@ -70,4 +70,4 @@ This project is a collaborative effort, and contributions are always welcome. If
 There was supposed to be a Rankings Page from team AlgorithmArena. However, our team was quite disorganized at the time the collaboration was supposed to happen, so we ultimately decided to scrape the Rankings page.
 
 ## Acknowledgments 
-We would like to thank Professor Matthew Lepinski for the mentorship and to all who provided feedback and support throughout the development process! Additionnaly, thank you to AlgorithmArena for working on a portion of our game's database, which entails showing ranked players from db: most wins, most loses, and more!
+We would like to thank Professor Matthew Lepinski for the mentorship and to all who provided feedback and support throughout the development process! Additionally, thank you to AlgorithmArena for working on a portion of our game's database, which entails showing ranked players from db: most wins, most loses, and more!
